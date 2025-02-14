@@ -1,0 +1,52 @@
+import cn from "classnames";
+import React from "react";
+import { MdClose } from "react-icons/md";
+import { IconButton } from "../IconButton";
+
+type TextInputProps = React.DetailedHTMLProps<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  HTMLInputElement
+> & {
+  label?: React.ReactNode;
+  error?: React.ReactNode;
+  icon?: React.ReactNode;
+  onClear?: () => void;
+};
+
+export const TextInput = ({
+  className,
+  label,
+  error,
+  icon,
+  onClear,
+  ...props
+}: TextInputProps) => {
+  return (
+    <label className={cn("flex flex-col", className)}>
+      <span className="font-medium">{label}</span>
+      <div className="relative">
+        {!!icon && <div className="absolute left-1 top-2">{icon}</div>}
+        <input
+          {...props}
+          className={cn(
+            "bg-white border-b-2 border-blue-900 rounded-t-sm outline-0 px-1.5 py-0.5 my-0.5 w-full",
+            {
+              "pl-6": !!icon,
+            },
+          )}
+        />
+        {!!onClear && (
+          <IconButton className="absolute right-0.5 top-1" onClick={onClear}>
+            <MdClose className="size-4" />
+          </IconButton>
+        )}
+      </div>
+
+      {error ? (
+        <span className="text-sm text-red-500">{error}</span>
+      ) : (
+        <div className="h-5" />
+      )}
+    </label>
+  );
+};
