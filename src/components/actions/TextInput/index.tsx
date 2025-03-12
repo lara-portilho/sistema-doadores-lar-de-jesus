@@ -1,6 +1,6 @@
+import { CloseIcon } from "@components/icons";
 import cn from "classnames";
 import React from "react";
-import { MdClose } from "react-icons/md";
 import { IconButton } from "../IconButton";
 
 type TextInputProps = React.DetailedHTMLProps<
@@ -37,7 +37,7 @@ export const TextInput = ({
         />
         {!!onClear && (
           <IconButton className="absolute right-0.5 top-1" onClick={onClear}>
-            <MdClose className="size-4" />
+            <CloseIcon className="size-4" />
           </IconButton>
         )}
       </div>

@@ -1,10 +1,10 @@
 import logo from "@assets/logo.png";
 import { Button } from "@components/actions/Button";
 import { TextInput } from "@components/actions/TextInput";
+import { LoginIcon } from "@components/icons";
 import { useStore } from "@hooks/useStore";
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
-import { MdLogin } from "react-icons/md";
 import { useNavigate } from "react-router";
 
 export const Login = observer(() => {
@@ -14,10 +14,10 @@ export const Login = observer(() => {
   const navigate = useNavigate();
   const { authCtrl } = useStore();
 
-  function handleLogin(e: React.FormEvent<HTMLFormElement>) {
+  async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
-      authCtrl.login(pass);
+      await authCtrl.login(pass);
       navigate("/");
     } catch (err: unknown) {
       if (typeof err === "string") setError(err);
@@ -39,7 +39,7 @@ export const Login = observer(() => {
           error={error}
         />
         <Button type="submit">
-          <MdLogin className="size-4 text-white" />
+          <LoginIcon className="size-4 text-white" />
           Entrar
         </Button>
       </form>

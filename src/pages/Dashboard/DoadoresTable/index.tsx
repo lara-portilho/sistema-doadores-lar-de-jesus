@@ -2,6 +2,14 @@
 import { Button } from "@components/actions/Button";
 import { IconButton } from "@components/actions/IconButton";
 import { TextInput } from "@components/actions/TextInput";
+import {
+  AddIcon,
+  DeleteIcon,
+  EditIcon,
+  HistoryIcon,
+  MoneyIcon,
+  SearchIcon,
+} from "@components/icons";
 import { useStore } from "@hooks/useStore";
 import { getDepartamentosLabel } from "@stores/entities/enums/Departamentos";
 import { getTiposDoadorLabel } from "@stores/entities/enums/TiposDoador";
@@ -9,26 +17,38 @@ import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
-import {
-  MdAdd,
-  MdAttachMoney,
-  MdDelete,
-  MdEdit,
-  MdSearch,
-} from "react-icons/md";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 export const DoadoresTable = observer(() => {
-  const { authCtrl, doadoresCtrl } = useStore();
+  const { authCtrl, doadoresCtrl, pagamentosCtrl, historicoCtrl } = useStore();
   const [search, setSearch] = useState("");
+
+  async function handleDelete(id: string) {
+    try {
+      const { isConfirmed } = await Swal.fire({
+        title: "Atenção!",
+        text: "Tem certeza que deseja excluir esse doador?",
+        icon: "warning",
+        confirmButtonText: "Excluir",
+        confirmButtonColor: "#fb2c36",
+        showCancelButton: true,
+        cancelButtonText: "Cancelar",
+        cancelButtonColor: "#919090",
+        reverseButtons: true,
+      });
+      if (!isConfirmed) return;
+      await doadoresCtrl.deleteDoador(id);
+      await doadoresCtrl.getDoadores();
+      toast.success("Doador excluído com sucesso!");
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   useEffect(() => {
     doadoresCtrl.getDoadores();
   }, []);
-
-  function handleDelete(cpf: string) {
-    doadoresCtrl.deleteDoador(cpf);
-    doadoresCtrl.getDoadores();
-  }
 
   return (
     <>
@@ -39,11 +59,11 @@ export const DoadoresTable = observer(() => {
           className="w-1/3"
           placeholder="Pesquisar"
           onClear={() => setSearch("")}
-          icon={<MdSearch className="size-4" />}
+          icon={<SearchIcon className="size-4" />}
         />
         {authCtrl.isEdit && (
           <Button onClick={() => doadoresCtrl.setModalOpen()}>
-            <MdAdd />
+            <AddIcon />
             Cadastrar doador
           </Button>
         )}
@@ -56,7 +76,7 @@ export const DoadoresTable = observer(() => {
             <th>Departamento</th>
             <th>Valor</th>
             <th>Última doação</th>
-            {authCtrl.isEdit && <th className="w-24" />}
+            {authCtrl.isEdit && <th className="w-28" />}
           </tr>
         </thead>
         <tbody>
@@ -64,9 +84,9 @@ export const DoadoresTable = observer(() => {
             ?.filter((doador) =>
               doador.nome.toLowerCase().includes(search.toLowerCase()),
             )
-            .map((doador, i) => (
+            .map((doador) => (
               <tr
-                key={i}
+                key={doador.id}
                 className="border-t border-gray-300 [&>td]:py-0.5 [&>td]:px-1.5 [&>td]:border-r [&>td]:border-gray-300 [&>td]:last:border-0"
               >
                 <td>{doador.nome}</td>
@@ -82,16 +102,23 @@ export const DoadoresTable = observer(() => {
                 </td>
                 {authCtrl.isEdit && (
                   <td className="text-center">
-                    <IconButton>
-                      <MdAttachMoney className="size-4 text-green-500" />
+                    <IconButton
+                      onClick={() => historicoCtrl.setModalOpen(doador.id)}
+                    >
+                      <HistoryIcon className="size-4 text-blue-500" />
                     </IconButton>
                     <IconButton
-                      onClick={() => doadoresCtrl.setModalOpen(doador.cpf)}
+                      onClick={() => pagamentosCtrl.setModalOpen(doador.id)}
                     >
-                      <MdEdit className="size-4" />
+                      <MoneyIcon className="size-4 text-green-500" />
                     </IconButton>
-                    <IconButton onClick={() => handleDelete(doador.cpf)}>
-                      <MdDelete className="size-4 text-red-500" />
+                    <IconButton
+                      onClick={() => doadoresCtrl.setModalOpen(doador.id)}
+                    >
+                      <EditIcon className="size-4" />
+                    </IconButton>
+                    <IconButton onClick={() => handleDelete(doador.id)}>
+                      <DeleteIcon className="size-4 text-red-500" />
                     </IconButton>
                   </td>
                 )}

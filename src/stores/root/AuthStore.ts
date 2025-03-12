@@ -1,7 +1,7 @@
 import { AuthService } from "@services/AuthService";
 import { User } from "@stores/entities/User";
 import { UserType } from "@stores/entities/enums/UserType";
-import { cast, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { cast, flow, Instance, SnapshotIn, types } from "mobx-state-tree";
 
 export const Auth = types
   .model({
@@ -13,14 +13,14 @@ export const Auth = types
     },
   }))
   .actions((self) => ({
-    login(pass: string) {
-      const user = AuthService.login(pass);
+    login: flow(function* (pass: string) {
+      const user = yield AuthService.login(pass);
       self.user = cast(user);
-    },
-    logout() {
-      AuthService.logout();
+    }),
+    logout: flow(function* () {
+      yield AuthService.logout();
       self.user = cast(null);
-    },
+    }),
     setUserFromSession() {
       const userType = sessionStorage.getItem("user");
       if (userType === UserType.Edit) self.user = cast({ type: UserType.Edit });

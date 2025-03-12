@@ -1,8 +1,8 @@
 import logo from "@assets/logo.png";
 import { Button } from "@components/actions/Button";
+import { LogoutIcon } from "@components/icons";
 import { useStore } from "@hooks/useStore";
 import { observer } from "mobx-react-lite";
-import { MdLogout } from "react-icons/md";
 
 export const Header = observer(() => {
   const { authCtrl } = useStore();
@@ -15,8 +15,8 @@ export const Header = observer(() => {
           Sistema de Mensalidades e Doações
         </h1>
       </div>
-      <Button onClick={() => authCtrl.logout()}>
-        <MdLogout className="size-4 text-white" />
+      <Button onClick={async () => await authCtrl.logout()}>
+        <LogoutIcon className="size-4 text-white" />
         Sair
       </Button>
     </div>
