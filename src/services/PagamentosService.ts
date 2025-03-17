@@ -14,7 +14,7 @@ export const PagamentosService = {
     const response = await api.request<IPagamento[]>({
       method: "GET",
       url: "/pagamento",
-      params: { id: doadorId },
+      params: { doadorId },
     });
     return response.data;
   },
