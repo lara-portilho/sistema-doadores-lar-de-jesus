@@ -28,6 +28,9 @@
       "@contexts/*": [
         "contexts/*"
       ],
+      "@dtos/*": [
+        "dtos/*"
+      ],
       "@hooks/*": [
         "hooks/*"
       ],

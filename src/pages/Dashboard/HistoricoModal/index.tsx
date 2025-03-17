@@ -38,7 +38,7 @@ export const HistoricoModal = observer(() => {
               <th>Valor total</th>
               <th>Valor extra</th>
               <th>Método</th>
-              <th className="w-56">Intervalo de meses</th>
+              <th className="w-56">Meses pagos</th>
             </tr>
           </thead>
           <tbody>
@@ -52,20 +52,22 @@ export const HistoricoModal = observer(() => {
                 <td>R$ {pagamento.valorExtra?.toFixed(2).replace(".", ",")}</td>
                 <td>{getTiposPagamentoLabel(pagamento.metodo)}</td>
                 <td>
-                  {format(parseISO(pagamento.mesesQuitados[0]), "MMM/yyyy", {
+                  {format(parseISO(pagamento.primeiroMesQuitado), "MMM/yyyy", {
                     locale: ptBR,
-                  })}{" "}
-                  à{" "}
-                  {format(
-                    parseISO(
-                      pagamento.mesesQuitados[
-                        pagamento.mesesQuitados.length - 1
-                      ],
-                    ),
-                    "MMM/yyyy",
-                    {
-                      locale: ptBR,
-                    },
+                  })}
+                  {pagamento.primeiroMesQuitado !==
+                    pagamento.ultimoMesQuitado && (
+                    <>
+                      {" "}
+                      à{" "}
+                      {format(
+                        parseISO(pagamento.ultimoMesQuitado),
+                        "MMM/yyyy",
+                        {
+                          locale: ptBR,
+                        },
+                      )}
+                    </>
                   )}
                 </td>
               </tr>

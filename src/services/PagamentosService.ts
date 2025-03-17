@@ -1,12 +1,21 @@
+import { PagamentoDTO } from "@dtos/PagamentoDTO";
 import { IPagamento } from "@stores/entities/Pagamento";
-
-const pagamentos = [] as IPagamento[];
+import { api } from "./api";
 
 export const PagamentosService = {
-  addPagamento: async (pagamento: IPagamento) => {
-    pagamentos.push(pagamento);
+  addPagamento: async (pagamento: PagamentoDTO) => {
+    await api.request({
+      method: "POST",
+      url: "/pagamento",
+      data: pagamento,
+    });
   },
   getHistorico: async (doadorId: string): Promise<IPagamento[]> => {
-    return pagamentos.filter((pagamento) => pagamento.id === doadorId);
+    const response = await api.request<IPagamento[]>({
+      method: "GET",
+      url: "/pagamento",
+      params: { id: doadorId },
+    });
+    return response.data;
   },
 };

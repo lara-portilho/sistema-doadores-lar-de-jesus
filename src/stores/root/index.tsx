@@ -2,8 +2,8 @@
 import { Instance, SnapshotIn, types } from "mobx-state-tree";
 import { Auth, AuthInitialData } from "./AuthStore";
 import { Doadores, DoadoresInitialData } from "./DoadoresStore";
-import { Pagamentos, PagamentosInitialData } from "./PagamentosStore";
 import { Historico, HistoricoInitialData } from "./HistoricoStore";
+import { Pagamentos, PagamentosInitialData } from "./PagamentosStore";
 
 export const Root = types.model({
   authCtrl: Auth,

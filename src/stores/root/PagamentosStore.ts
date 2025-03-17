@@ -1,5 +1,6 @@
+import { PagamentoDTO } from "@dtos/PagamentoDTO";
 import { PagamentosService } from "@services/PagamentosService";
-import { IPagamento, Pagamento } from "@stores/entities/Pagamento";
+import { Pagamento } from "@stores/entities/Pagamento";
 import { flow, Instance, SnapshotIn, types } from "mobx-state-tree";
 
 export const Pagamentos = types
@@ -9,7 +10,7 @@ export const Pagamentos = types
     selectedDoadorId: types.maybeNull(types.string),
   })
   .actions((self) => ({
-    addPagamento: flow(function* (pagamento: IPagamento) {
+    addPagamento: flow(function* (pagamento: PagamentoDTO) {
       if (!self.selectedDoadorId) return;
       yield PagamentosService.addPagamento(pagamento);
     }),

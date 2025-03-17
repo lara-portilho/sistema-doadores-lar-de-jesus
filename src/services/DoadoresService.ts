@@ -1,153 +1,35 @@
+import { DoadorDTO } from "@dtos/DoadorDTO";
 import { IDoador } from "@stores/entities/Doador";
-
-const doadores: IDoador[] = [
-  {
-    id: "1",
-    nome: "Constantina Trineman",
-    tipo: "esporadico",
-    cpf: "100.123.456-89",
-    telefone: "(62) 98982-5842",
-    endereco: "Avenida...",
-    email: "ctrineman0@geocities.com",
-    aniversario: "2023-01-19",
-    departamento: "semDepartamento",
-    valor: 86,
-    ultimoMes: "2022-05-01",
-  },
-  {
-    id: "2",
-    nome: "Alexi Duesberry",
-    tipo: "esporadico",
-    cpf: "200.123.456-89",
-    telefone: "(62) 3650-5428",
-    endereco: "Avenida...",
-    email: "aduesberry1@ucoz.com",
-    aniversario: "2023-02-12",
-    departamento: "mediunico",
-    valor: 57,
-    ultimoMes: "2023-06-01",
-  },
-  {
-    id: "3",
-    nome: "Norbie Schooley",
-    tipo: "naoEfetivo",
-    cpf: "300.123.456-89",
-    telefone: "(62) 98982-5842",
-    endereco: "Avenida...",
-    email: "nschooley2@sun.com",
-    aniversario: "2023-04-22",
-    departamento: "atendimento",
-    valor: 51,
-    ultimoMes: "2023-12-01",
-  },
-  {
-    id: "4",
-    nome: "Ardisj Guilliatt",
-    tipo: "naoEfetivo",
-    cpf: "400.123.456-89",
-    telefone: "(62) 98982-5842",
-    endereco: "Avenida...",
-    email: "aguilliatt3@discuz.net",
-    aniversario: "2023-06-29",
-    departamento: "estudos",
-    valor: 17,
-    ultimoMes: "2024-10-01",
-  },
-  {
-    id: "5",
-    nome: "Alexandra Babonau",
-    tipo: "esporadico",
-    cpf: "500.123.456-89",
-    telefone: "(62) 98982-5842",
-    endereco: "Avenida...",
-    email: "ababonau4@ibm.com",
-    aniversario: "2024-09-20",
-    departamento: "trabalhador",
-    valor: 42,
-    ultimoMes: "2023-07-01",
-  },
-  {
-    id: "6",
-    nome: "Sissy Baxter",
-    tipo: "naoEfetivo",
-    cpf: "600.123.456-89",
-    telefone: "(62) 98982-5842",
-    endereco: "Avenida...",
-    email: "sbaxter5@theglobeandmail.com",
-    aniversario: "2023-01-04",
-    departamento: "mediunico",
-    valor: 63,
-    ultimoMes: "2023-10-01",
-  },
-  {
-    id: "7",
-    nome: "Jobey Izkovitch",
-    tipo: "efetivo",
-    cpf: "700.123.456-89",
-    telefone: "(62) 98982-5842",
-    endereco: "Avenida...",
-    email: "jizkovitch6@umn.edu",
-    aniversario: "2024-12-17",
-    departamento: "mediunico",
-    valor: 29,
-    ultimoMes: "2024-05-01",
-  },
-  {
-    id: "8",
-    nome: "Dita Dilliston",
-    tipo: "naoEfetivo",
-    cpf: "800.123.456-89",
-    telefone: "(62) 98982-5842",
-    endereco: "Avenida...",
-    email: "ddilliston7@tamu.edu",
-    aniversario: "2022-12-22",
-    departamento: "atendimento",
-    valor: 14,
-    ultimoMes: "2024-10-01",
-  },
-  {
-    id: "9",
-    nome: "Donaugh Finnimore",
-    tipo: "naoEfetivo",
-    cpf: "900.123.456-89",
-    telefone: "(62) 98982-5842",
-    endereco: "Avenida...",
-    email: "dfinnimore8@shop-pro.jp",
-    aniversario: "2024-02-26",
-    departamento: "atendimento",
-    valor: 91,
-    ultimoMes: "2024-10-01",
-  },
-  {
-    id: "10",
-    nome: "Pollyanna McReynolds",
-    tipo: "naoEfetivo",
-    cpf: "040.123.456-89",
-    telefone: "(62) 98982-5842",
-    endereco: "Avenida...",
-    email: "pmcreynolds9@hostgator.com",
-    aniversario: "2024-07-03",
-    departamento: "atendimento",
-    valor: 70,
-    ultimoMes: "2023-04-01",
-  },
-];
+import { api } from "./api";
 
 export const DoadoresService = {
   getDoadores: async (): Promise<IDoador[]> => {
-    return doadores;
+    const response = await api.request<IDoador[]>({
+      method: "GET",
+      url: "/doador",
+    });
+    return response.data;
   },
-  addDoador: async (doador: IDoador) => {
-    doadores.push(doador);
+  addDoador: async (doador: DoadorDTO) => {
+    await api.request({
+      method: "POST",
+      url: "/doador",
+      data: doador,
+    });
   },
-  updateDoador: async (doador: IDoador) => {
-    const index = doadores.findIndex((d) => d.id === doador.id);
-    if (index === -1) throw new Error("Doador não encontrado!");
-    doadores[index] = doador;
+  updateDoador: async (id: string, doador: DoadorDTO) => {
+    await api.request({
+      method: "PATCH",
+      url: "/doador",
+      data: doador,
+      params: { id },
+    });
   },
   deleteDoador: async (id: string) => {
-    const index = doadores.findIndex((d) => d.id === id);
-    if (index === -1) throw new Error("Doador não encontrado!");
-    doadores.splice(index, 1);
+    await api.request({
+      method: "DELETE",
+      url: "/doador",
+      params: { id },
+    });
   },
 };

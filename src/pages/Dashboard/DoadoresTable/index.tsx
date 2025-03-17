@@ -42,6 +42,7 @@ export const DoadoresTable = observer(() => {
       await doadoresCtrl.getDoadores();
       toast.success("Doador excluído com sucesso!");
     } catch (err) {
+      toast.error("Houve algum erro ao excluir o doador!");
       console.log(err);
     }
   }
@@ -75,7 +76,7 @@ export const DoadoresTable = observer(() => {
             <th>Tipo</th>
             <th>Departamento</th>
             <th>Valor</th>
-            <th>Última doação</th>
+            <th>Último mês quitado</th>
             {authCtrl.isEdit && <th className="w-28" />}
           </tr>
         </thead>

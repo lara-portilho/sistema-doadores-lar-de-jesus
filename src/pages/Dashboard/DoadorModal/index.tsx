@@ -6,8 +6,8 @@ import { Select } from "@components/actions/Select";
 import { TextInput } from "@components/actions/TextInput";
 import { RealIcon } from "@components/icons";
 import { Modal } from "@components/layout/Modal";
+import { DoadorDTO } from "@dtos/DoadorDTO";
 import { useStore } from "@hooks/useStore";
-import { IDoador } from "@stores/entities/Doador";
 import {
   Departamentos,
   getDepartamentosLabel,
@@ -20,7 +20,6 @@ import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { v4 as uuid } from "uuid";
 
 export const DoadorModal = observer(() => {
   const { doadoresCtrl } = useStore();
@@ -30,7 +29,7 @@ export const DoadorModal = observer(() => {
     reset,
     setValue,
     formState: { errors },
-  } = useForm<IDoador>({
+  } = useForm<DoadorDTO>({
     defaultValues: {
       nome: "",
       tipo: TiposDoador.Esporadico,
@@ -43,18 +42,11 @@ export const DoadorModal = observer(() => {
     },
   });
 
-  async function onSubmit(data: IDoador) {
+  async function onSubmit(data: DoadorDTO) {
     try {
       if (doadoresCtrl.selectedDoadorId)
-        await doadoresCtrl.updateDoador({
-          ...doadoresCtrl.selectedDoador,
-          ...data,
-        });
-      else
-        await doadoresCtrl.addDoador({
-          ...data,
-          id: uuid(),
-        });
+        await doadoresCtrl.updateDoador(doadoresCtrl.selectedDoadorId, data);
+      else await doadoresCtrl.addDoador(data);
       await doadoresCtrl.getDoadores();
       reset();
       doadoresCtrl.setModalClose();
@@ -62,6 +54,9 @@ export const DoadorModal = observer(() => {
         `Doador ${doadoresCtrl.selectedDoadorId ? "editado" : "adicionado"} com sucesso!`,
       );
     } catch (err) {
+      toast.error(
+        `Houve algum erro ao ${doadoresCtrl.selectedDoadorId ? "editar" : "adicionar"} o doador!`,
+      );
       console.log(err);
     }
   }
@@ -69,7 +64,7 @@ export const DoadorModal = observer(() => {
   useEffect(() => {
     if (doadoresCtrl.selectedDoadorId && doadoresCtrl.selectedDoador) {
       Object.entries(doadoresCtrl.selectedDoador).forEach(([key, value]) => {
-        setValue(key as keyof IDoador, value);
+        setValue(key as keyof DoadorDTO, value);
       });
     }
 

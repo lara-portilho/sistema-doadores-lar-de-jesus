@@ -1,5 +1,6 @@
+import { DoadorDTO } from "@dtos/DoadorDTO";
 import { DoadoresService } from "@services/DoadoresService";
-import { Doador, IDoador } from "@stores/entities/Doador";
+import { Doador } from "@stores/entities/Doador";
 import { cast, flow, Instance, SnapshotIn, types } from "mobx-state-tree";
 
 export const Doadores = types
@@ -20,11 +21,11 @@ export const Doadores = types
       const doadores = yield DoadoresService.getDoadores();
       self.doadores = cast(doadores);
     }),
-    addDoador: flow(function* (doador: IDoador) {
+    addDoador: flow(function* (doador: DoadorDTO) {
       yield DoadoresService.addDoador(doador);
     }),
-    updateDoador: flow(function* (doador: IDoador) {
-      yield DoadoresService.updateDoador(doador);
+    updateDoador: flow(function* (id: string, doador: DoadorDTO) {
+      yield DoadoresService.updateDoador(id, doador);
     }),
     deleteDoador: flow(function* (id: string) {
       yield DoadoresService.deleteDoador(id);

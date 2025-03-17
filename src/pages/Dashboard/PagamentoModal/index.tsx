@@ -9,24 +9,16 @@ import {
   getTiposPagamentoLabel,
   TiposPagamento,
 } from "@stores/entities/enums/TiposPagamento";
-import {
-  addMonths,
-  eachMonthOfInterval,
-  format,
-  isBefore,
-  isEqual,
-  parseISO,
-} from "date-fns";
+import { addMonths, format, isBefore, isEqual, parseISO } from "date-fns";
 import { observer } from "mobx-react-lite";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { v4 as uuid } from "uuid";
 
 type PagamentoFormValues = {
   data: string;
-  pagoDataInicio: string;
-  pagoDataFim: string;
+  primeiroMesQuitado: string;
+  ultimoMesQuitado: string;
   metodo: TiposPagamento;
   valorExtra: number;
 };
@@ -50,8 +42,8 @@ export const PagamentoModal = observer(() => {
     defaultValues: {
       data: format(new Date(), "yyyy-MM-dd"),
       metodo: TiposPagamento.Cartao,
-      pagoDataInicio: format(new Date(), "yyyy-MM"),
-      pagoDataFim: format(new Date(), "yyyy-MM"),
+      primeiroMesQuitado: format(new Date(), "yyyy-MM"),
+      ultimoMesQuitado: format(new Date(), "yyyy-MM"),
     },
   });
 
@@ -59,28 +51,21 @@ export const PagamentoModal = observer(() => {
     try {
       if (!pagamentosCtrl.selectedDoadorId || !doador)
         throw new Error("Houve um problema ao salvar o pagamento!");
-      const dataInicio = parseISO(data.pagoDataInicio);
-      const dataFim = parseISO(data.pagoDataFim);
-      const mesesQuitados = eachMonthOfInterval({
-        start: dataInicio,
-        end: dataFim,
-      }).map((mes) => format(mes, "yyyy-MM-dd"));
 
       await pagamentosCtrl.addPagamento({
-        id: uuid(),
-        cpf: doador?.cpf,
+        doadorId: doador?.id,
         data: data.data,
         metodo: data.metodo,
         valorExtra: data.valorExtra || 0,
-        valorTotal:
-          mesesQuitados.length * (doador?.valor || 0) + (data.valorExtra || 0),
-        mesesQuitados: mesesQuitados,
+        primeiroMesQuitado: `${data.primeiroMesQuitado}-01`,
+        ultimoMesQuitado: `${data.ultimoMesQuitado}-01`,
       });
       doadoresCtrl.getDoadores();
       reset();
       pagamentosCtrl.setModalClose();
       toast.success("Pagamento adicionado com sucesso!");
     } catch (err) {
+      toast.error("Houve algum erro ao adicionar o pagamento!");
       console.log(err);
     }
   }
@@ -88,7 +73,11 @@ export const PagamentoModal = observer(() => {
   useEffect(() => {
     if (pagamentosCtrl.selectedDoadorId && doador?.ultimoMes) {
       setValue(
-        "pagoDataInicio",
+        "primeiroMesQuitado",
+        format(addMonths(parseISO(doador?.ultimoMes), 1), "yyyy-MM"),
+      );
+      setValue(
+        "ultimoMesQuitado",
         format(addMonths(parseISO(doador?.ultimoMes), 1), "yyyy-MM"),
       );
     }
@@ -131,12 +120,12 @@ export const PagamentoModal = observer(() => {
         </div>
         <div className="flex justify-stretch gap-10">
           <TextInput
-            {...register("pagoDataInicio", {
+            {...register("primeiroMesQuitado", {
               required: "Esse campo é necessário!",
               validate: {
-                checkAfterUltimoPagamento: (pagoDataInicio) => {
+                checkAfterUltimoPagamento: (primeiroMesQuitado) => {
                   if (!doador?.ultimoMes) return true;
-                  const dataInicio = parseISO(pagoDataInicio);
+                  const dataInicio = parseISO(primeiroMesQuitado);
                   const ultimoPagamento = parseISO(doador.ultimoMes);
                   if (
                     isBefore(dataInicio, ultimoPagamento) ||
@@ -149,16 +138,19 @@ export const PagamentoModal = observer(() => {
             })}
             label="Pago de"
             type="month"
-            error={errors.pagoDataInicio?.message}
+            error={errors.primeiroMesQuitado?.message}
             className="flex-1"
           />
           <TextInput
-            {...register("pagoDataFim", {
+            {...register("ultimoMesQuitado", {
               required: "Esse campo é necessário!",
               validate: {
-                checkAfterInicio: (pagoDataFim, { pagoDataInicio }) => {
-                  const dataInicio = parseISO(pagoDataInicio);
-                  const dataFim = parseISO(pagoDataFim);
+                checkAfterInicio: (
+                  ultimoMesQuitado,
+                  { primeiroMesQuitado },
+                ) => {
+                  const dataInicio = parseISO(primeiroMesQuitado);
+                  const dataFim = parseISO(ultimoMesQuitado);
                   if (isBefore(dataFim, dataInicio))
                     return "A data final deve ser posterior à inicial!";
                   return true;
@@ -167,7 +159,7 @@ export const PagamentoModal = observer(() => {
             })}
             label="Pago até"
             type="month"
-            error={errors.pagoDataFim?.message}
+            error={errors.ultimoMesQuitado?.message}
             className="flex-1"
           />
           <TextInput
