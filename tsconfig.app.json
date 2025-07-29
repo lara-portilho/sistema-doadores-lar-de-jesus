@@ -17,31 +17,34 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "paths": {
+      "@app/*": [
+        "src/*"
+      ],
       "@assets/*": [
-        "assets/*"
+        "src/assets/*"
       ],
       "@components/*": [
-        "components/*"
+        "src/components/*"
       ],
       "@contexts/*": [
-        "contexts/*"
+        "src/contexts/*"
       ],
       "@dtos/*": [
-        "dtos/*"
+        "src/dtos/*"
       ],
       "@hooks/*": [
-        "hooks/*"
+        "src/hooks/*"
       ],
       "@pages/*": [
-        "pages/*"
+        "src/pages/*"
       ],
       "@services/*": [
-        "services/*"
+        "src/services/*"
       ],
       "@stores/*": [
-        "stores/*"
+        "src/stores/*"
       ],
     },
     /* Linting */

@@ -24,6 +24,9 @@ export const Historico = types
       self.modalOpen = false;
       self.selectedDoadorId = null;
     },
+    reset() {
+      self.pagamentos = cast([]);
+    },
   }));
 
 export type IHistoricoStore = Instance<typeof Historico>;

@@ -19,6 +19,8 @@ export const HistoricoModal = observer(() => {
 
   useEffect(() => {
     historicoCtrl.getHistorico();
+
+    return () => historicoCtrl.reset();
   }, [historicoCtrl.selectedDoadorId]);
 
   return (

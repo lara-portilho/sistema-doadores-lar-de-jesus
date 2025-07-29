@@ -13,21 +13,29 @@ export const Auth = types
     },
   }))
   .actions((self) => ({
-    login: flow(function* (pass: string) {
-      const user = yield AuthService.login(pass);
+    login: flow(function* (email: string, pass: string) {
+      const user = yield AuthService.login(email, pass);
       self.user = cast(user);
     }),
     logout: flow(function* () {
       yield AuthService.logout();
       self.user = cast(null);
     }),
-    setUserFromSession() {
-      const userType = sessionStorage.getItem("user");
-      if (userType === UserType.Edit) self.user = cast({ type: UserType.Edit });
-      else if (userType === UserType.View)
-        self.user = cast({ type: UserType.View });
-      else self.user = cast(null);
-    },
+  }))
+  .actions((self) => ({
+    getUserFromSession: flow(function* () {
+      const userId = sessionStorage.getItem("user");
+      if (!userId) {
+        self.user = cast(null);
+        return;
+      }
+      const user = yield AuthService.getUser(userId);
+      if (!user) {
+        self.logout();
+        return;
+      }
+      self.user = cast(user);
+    }),
   }));
 
 export type IAuthStore = Instance<typeof Auth>;

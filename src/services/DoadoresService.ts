@@ -1,35 +1,35 @@
+import { db } from "@app/firebase";
 import { DoadorDTO } from "@dtos/DoadorDTO";
 import { IDoador } from "@stores/entities/Doador";
-import { api } from "./api";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 
 export const DoadoresService = {
   getDoadores: async (): Promise<IDoador[]> => {
-    const response = await api.request<IDoador[]>({
-      method: "GET",
-      url: "/doador",
-    });
-    return response.data;
+    const collectionRef = collection(db, "doadores");
+    const querySnapshot = await getDocs(collectionRef);
+    const data = querySnapshot.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    })) as IDoador[];
+    return data;
   },
   addDoador: async (doador: DoadorDTO) => {
-    await api.request({
-      method: "POST",
-      url: "/doador",
-      data: doador,
-    });
+    const collectionRef = collection(db, "doadores");
+    await addDoc(collectionRef, doador);
   },
   updateDoador: async (id: string, doador: DoadorDTO) => {
-    await api.request({
-      method: "PATCH",
-      url: "/doador",
-      data: doador,
-      params: { id },
-    });
+    const docRef = doc(db, "doadores", id);
+    await updateDoc(docRef, doador);
   },
   deleteDoador: async (id: string) => {
-    await api.request({
-      method: "DELETE",
-      url: "/doador",
-      params: { id },
-    });
+    const docRef = doc(db, "doadores", id);
+    await deleteDoc(docRef);
   },
 };

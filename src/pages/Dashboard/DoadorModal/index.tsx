@@ -48,11 +48,11 @@ export const DoadorModal = observer(() => {
         await doadoresCtrl.updateDoador(doadoresCtrl.selectedDoadorId, data);
       else await doadoresCtrl.addDoador(data);
       await doadoresCtrl.getDoadores();
-      reset();
-      doadoresCtrl.setModalClose();
       toast.success(
         `Doador ${doadoresCtrl.selectedDoadorId ? "editado" : "adicionado"} com sucesso!`,
       );
+      reset();
+      doadoresCtrl.setModalClose();
     } catch (err) {
       toast.error(
         `Houve algum erro ao ${doadoresCtrl.selectedDoadorId ? "editar" : "adicionar"} o doador!`,
@@ -144,6 +144,10 @@ export const DoadorModal = observer(() => {
           <TextInput
             {...register("aniversario", {
               required: "Esse campo é necessário!",
+              validate: (value) =>
+                new Date(value) < new Date()
+                  ? true
+                  : "O aniversário deve ser anterior à data atual!",
             })}
             label="Aniversário"
             type="date"

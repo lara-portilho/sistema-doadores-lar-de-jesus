@@ -30,6 +30,9 @@ export const Doadores = types
     deleteDoador: flow(function* (id: string) {
       yield DoadoresService.deleteDoador(id);
     }),
+    reset() {
+      self.doadores = cast([]);
+    },
     setModalOpen(id?: string) {
       self.modalOpen = true;
       self.selectedDoadorId = id ?? null;

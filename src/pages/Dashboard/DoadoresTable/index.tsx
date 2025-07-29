@@ -49,6 +49,7 @@ export const DoadoresTable = observer(() => {
 
   useEffect(() => {
     doadoresCtrl.getDoadores();
+    return () => doadoresCtrl.reset();
   }, []);
 
   return (

@@ -28,7 +28,7 @@ function App() {
   const { authCtrl } = useStore();
 
   useEffect(() => {
-    authCtrl.setUserFromSession();
+    (async () => authCtrl.getUserFromSession())();
   }, []);
 
   return (
