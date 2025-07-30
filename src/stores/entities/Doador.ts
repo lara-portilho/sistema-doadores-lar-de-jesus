@@ -13,6 +13,7 @@ export const Doador = types.model({
   aniversario: types.string,
   departamento: types.frozen<Departamentos>(),
   valor: types.number,
+  dataUltimoPag: types.maybeNull(types.string),
   ultimoMes: types.maybeNull(types.string),
 });
 
@@ -30,5 +31,6 @@ export const DoadorInitialData: IDoador = {
   aniversario: "",
   departamento: Departamentos.SemDepartamento,
   valor: 0,
+  dataUltimoPag: null,
   ultimoMes: null,
 };

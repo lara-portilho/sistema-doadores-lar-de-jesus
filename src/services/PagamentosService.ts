@@ -26,9 +26,14 @@ export const PagamentosService = {
         parseISO(pagamento.primeiroMesQuitado),
       ) + 1;
 
-    const valorTotal = doador.valor * mesesLength + (pagamento.valorExtra || 0);
-    await addDoc(collectionRef, { ...pagamento, valorTotal });
-    await updateDoc(doadorRef, { ultimoMes: pagamento.ultimoMesQuitado });
+    const valorMensalidade = doador.valor;
+    const valorTotal =
+      valorMensalidade * mesesLength + (pagamento.valorExtra || 0);
+    await addDoc(collectionRef, { ...pagamento, valorTotal, valorMensalidade });
+    await updateDoc(doadorRef, {
+      ultimoMes: pagamento.ultimoMesQuitado,
+      dataUltimoPag: pagamento.data,
+    });
   },
   getHistorico: async (doadorId: string): Promise<IPagamento[]> => {
     const collectionRef = collection(db, "pagamentos");
