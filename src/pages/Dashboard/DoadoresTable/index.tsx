@@ -77,6 +77,7 @@ export const DoadoresTable = observer(() => {
             <th>Tipo</th>
             <th>Departamento</th>
             <th>Valor</th>
+            <th>Data último pagamento</th>
             <th>Último mês quitado</th>
             {authCtrl.isEdit && <th className="w-28" />}
           </tr>
@@ -95,6 +96,13 @@ export const DoadoresTable = observer(() => {
                 <td>{getTiposDoadorLabel(doador.tipo)}</td>
                 <td>{getDepartamentosLabel(doador.departamento)}</td>
                 <td>R$ {doador.valor.toFixed(2).replace(".", ",")}</td>
+                <td>
+                  {doador.dataUltimoPag
+                    ? format(parseISO(doador.dataUltimoPag), "dd/MM/yyyy", {
+                        locale: ptBR,
+                      })
+                    : "Sem doações"}
+                </td>
                 <td>
                   {doador.ultimoMes
                     ? format(parseISO(doador.ultimoMes), "MMM/yyyy", {
