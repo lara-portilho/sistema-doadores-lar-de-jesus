@@ -2,8 +2,7 @@
 import { Modal } from "@components/layout/Modal";
 import { useStore } from "@hooks/useStore";
 import { getTiposPagamentoLabel } from "@stores/entities/enums/TiposPagamento";
-import { format, parseISO } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { formatDateString } from "@utils/formatDateString";
 import { observer } from "mobx-react-lite";
 import { useEffect, useMemo } from "react";
 
@@ -29,13 +28,13 @@ export const HistoricoModal = observer(() => {
       onRequestClose={() => historicoCtrl.setModalClose()}
       size="60rem"
     >
-      <h1 className="font-bold text-2xl mb-2">
+      <h1 className="mb-2 text-2xl font-bold">
         Histórico de pagamentos de {doador?.nome}
       </h1>
       {historicoCtrl.pagamentos.length ? (
-        <table className="bg-white w-full rounded-lg table-fixed">
+        <table className="w-full table-fixed rounded-lg bg-white">
           <thead>
-            <tr className="[&>th]:py-1 [&>th]:border-r [&>th]:border-gray-300 [&>th]:last:border-0">
+            <tr className="[&>th]:border-r [&>th]:border-gray-300 [&>th]:py-1 [&>th]:last:border-0">
               <th>Data</th>
               <th>Valor mensal</th>
               <th>Valor extra</th>
@@ -52,9 +51,9 @@ export const HistoricoModal = observer(() => {
               return (
                 <tr
                   key={pagamento.id}
-                  className="border-t border-gray-300 [&>td]:py-0.5 [&>td]:px-1.5 [&>td]:border-r [&>td]:border-gray-300 [&>td]:last:border-0"
+                  className="border-t border-gray-300 [&>td]:border-r [&>td]:border-gray-300 [&>td]:px-1.5 [&>td]:py-0.5 [&>td]:last:border-0"
                 >
-                  <td>{format(parseISO(pagamento.data), "dd/MM/yyyy")}</td>
+                  <td>{formatDateString(pagamento.data, "dd/MM/yyyy")}</td>
                   <td>
                     {mesesPagos} x R${" "}
                     {pagamento.valorMensalidade.toFixed(2).replace(".", ",")}
@@ -67,24 +66,16 @@ export const HistoricoModal = observer(() => {
                   </td>
                   <td>{getTiposPagamentoLabel(pagamento.metodo)}</td>
                   <td>
-                    {format(
-                      parseISO(pagamento.primeiroMesQuitado),
-                      "MMM/yyyy",
-                      {
-                        locale: ptBR,
-                      },
-                    )}
-                    {pagamento.primeiroMesQuitado !==
-                      pagamento.ultimoMesQuitado && (
+                    {formatDateString(pagamento.mesesQuitados[0], "MMM/yyyy")}
+                    {pagamento.mesesQuitados.length > 1 && (
                       <>
                         {" "}
                         à{" "}
-                        {format(
-                          parseISO(pagamento.ultimoMesQuitado),
+                        {formatDateString(
+                          pagamento.mesesQuitados[
+                            pagamento.mesesQuitados.length - 1
+                          ],
                           "MMM/yyyy",
-                          {
-                            locale: ptBR,
-                          },
                         )}
                       </>
                     )}
@@ -95,7 +86,7 @@ export const HistoricoModal = observer(() => {
           </tbody>
         </table>
       ) : (
-        <p className="text-center w-full font-medium text-lg py-5">
+        <p className="w-full py-5 text-center text-lg font-medium">
           Esse doador ainda não fez doações!
         </p>
       )}

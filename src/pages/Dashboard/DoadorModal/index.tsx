@@ -78,7 +78,7 @@ export const DoadorModal = observer(() => {
       size="55rem"
     >
       <form onSubmit={handleSubmit(onSubmit)}>
-        <h1 className="font-bold text-2xl mb-2">
+        <h1 className="mb-2 text-2xl font-bold">
           {doadoresCtrl.selectedDoadorId ? "Atualização" : "Cadastro"} de doador
         </h1>
         <div className="flex justify-stretch gap-10">
@@ -165,7 +165,7 @@ export const DoadorModal = observer(() => {
             step="0.01"
             placeholder="0,00"
             error={errors.valor?.message}
-            icon={<RealIcon className="size-3 mt-1" />}
+            icon={<RealIcon className="mt-1 size-3" />}
             className="flex-1"
           />
         </div>

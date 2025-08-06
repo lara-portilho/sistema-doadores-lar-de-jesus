@@ -1,7 +1,14 @@
 import { AuthService } from "@services/AuthService";
 import { User } from "@stores/entities/User";
 import { UserType } from "@stores/entities/enums/UserType";
-import { cast, flow, Instance, SnapshotIn, types } from "mobx-state-tree";
+import {
+  cast,
+  flow,
+  Instance,
+  SnapshotIn,
+  toGenerator,
+  types,
+} from "mobx-state-tree";
 
 export const Auth = types
   .model({
@@ -14,11 +21,11 @@ export const Auth = types
   }))
   .actions((self) => ({
     login: flow(function* (email: string, pass: string) {
-      const user = yield AuthService.login(email, pass);
+      const user = yield* toGenerator(AuthService.login(email, pass));
       self.user = cast(user);
     }),
     logout: flow(function* () {
-      yield AuthService.logout();
+      yield* toGenerator(AuthService.logout());
       self.user = cast(null);
     }),
   }))
@@ -29,7 +36,7 @@ export const Auth = types
         self.user = cast(null);
         return;
       }
-      const user = yield AuthService.getUser(userId);
+      const user = yield* toGenerator(AuthService.getUser(userId));
       if (!user) {
         self.logout();
         return;

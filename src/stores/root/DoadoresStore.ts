@@ -1,7 +1,14 @@
 import { DoadorDTO } from "@dtos/DoadorDTO";
 import { DoadoresService } from "@services/DoadoresService";
 import { Doador } from "@stores/entities/Doador";
-import { cast, flow, Instance, SnapshotIn, types } from "mobx-state-tree";
+import {
+  cast,
+  flow,
+  Instance,
+  SnapshotIn,
+  toGenerator,
+  types,
+} from "mobx-state-tree";
 
 export const Doadores = types
   .model({
@@ -15,20 +22,23 @@ export const Doadores = types
         (doador) => doador.id === self.selectedDoadorId,
       );
     },
+    get filteredDoadores() {
+      return self.doadores.filter((doador) => !doador.excluido);
+    },
   }))
   .actions((self) => ({
     getDoadores: flow(function* () {
-      const doadores = yield DoadoresService.getDoadores();
+      const doadores = yield* toGenerator(DoadoresService.getDoadores());
       self.doadores = cast(doadores);
     }),
     addDoador: flow(function* (doador: DoadorDTO) {
-      yield DoadoresService.addDoador(doador);
+      yield* toGenerator(DoadoresService.addDoador(doador));
     }),
     updateDoador: flow(function* (id: string, doador: DoadorDTO) {
-      yield DoadoresService.updateDoador(id, doador);
+      yield* toGenerator(DoadoresService.updateDoador(id, doador));
     }),
     deleteDoador: flow(function* (id: string) {
-      yield DoadoresService.deleteDoador(id);
+      yield* toGenerator(DoadoresService.deleteDoador(id));
     }),
     reset() {
       self.doadores = cast([]);

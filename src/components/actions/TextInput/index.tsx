@@ -25,18 +25,18 @@ export const TextInput = ({
     <label className={cn("flex flex-col", className)}>
       <span className="font-medium">{label}</span>
       <div className="relative">
-        {!!icon && <div className="absolute left-1 top-2">{icon}</div>}
+        {!!icon && <div className="absolute top-2 left-1">{icon}</div>}
         <input
           {...props}
           className={cn(
-            "bg-white border-b-2 border-blue-900 rounded-t-sm outline-0 px-1.5 py-0.5 my-0.5 w-full",
+            "my-0.5 w-full rounded-t-sm border-b-2 border-blue-900 bg-white px-1.5 py-0.5 outline-0",
             {
               "pl-6": !!icon,
             },
           )}
         />
         {!!onClear && (
-          <IconButton className="absolute right-0.5 top-1" onClick={onClear}>
+          <IconButton className="absolute top-1 right-0.5" onClick={onClear}>
             <CloseIcon className="size-4" />
           </IconButton>
         )}

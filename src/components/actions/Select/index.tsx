@@ -22,7 +22,7 @@ export const Select = ({
       <span className="font-medium">{label}</span>
       <select
         {...props}
-        className="bg-white border-b-2 border-blue-900 rounded-t-sm outline-0 px-1.5 py-0.5 my-0.5"
+        className="my-0.5 rounded-t-sm border-b-2 border-blue-900 bg-white px-1.5 py-0.5 outline-0"
       >
         {options.map((option) => (
           <option key={option.value} value={option.value}>

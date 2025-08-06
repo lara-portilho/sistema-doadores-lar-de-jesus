@@ -1,5 +1,5 @@
 import { auth, db } from "@app/firebase";
-import { IUser } from "@app/stores/entities/User";
+import { IUser } from "@stores/entities/User";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 

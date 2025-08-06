@@ -46,16 +46,19 @@
       "@stores/*": [
         "src/stores/*"
       ],
+      "@utils/*": [
+        "src/utils/*"
+      ]
     },
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
+    "noUncheckedSideEffectImports": true
   },
   "include": [
     "**/*.ts",
-    "**/*.tsx",
-  ],
+    "**/*.tsx"
+  ]
 }

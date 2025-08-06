@@ -5,6 +5,8 @@ import { DoadoresTable } from "./DoadoresTable";
 import { DoadorModal } from "./DoadorModal";
 import { HistoricoModal } from "./HistoricoModal";
 import { PagamentoModal } from "./PagamentoModal";
+import { RelatorioMensalModal } from "./RelatorioMensalModal";
+import { RelatorioPeriodoModal } from "./RelatorioPeriodoModal";
 
 export const Dashboard = observer(() => {
   return (
@@ -13,6 +15,8 @@ export const Dashboard = observer(() => {
       <DoadorModal />
       <PagamentoModal />
       <HistoricoModal />
+      <RelatorioPeriodoModal />
+      <RelatorioMensalModal />
       <ToastContainer />
     </Layout>
   );

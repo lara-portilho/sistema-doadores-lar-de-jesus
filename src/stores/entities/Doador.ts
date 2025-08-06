@@ -15,6 +15,7 @@ export const Doador = types.model({
   valor: types.number,
   dataUltimoPag: types.maybeNull(types.string),
   ultimoMes: types.maybeNull(types.string),
+  excluido: types.boolean,
 });
 
 export type IDoadorStore = Instance<typeof Doador>;
@@ -33,4 +34,5 @@ export const DoadorInitialData: IDoador = {
   valor: 0,
   dataUltimoPag: null,
   ultimoMes: null,
+  excluido: false,
 };

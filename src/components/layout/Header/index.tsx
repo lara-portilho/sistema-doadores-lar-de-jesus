@@ -8,7 +8,7 @@ export const Header = observer(() => {
   const { authCtrl } = useStore();
 
   return (
-    <div className="flex justify-between items-center bg-blue-900/20 px-20 py-5">
+    <div className="flex items-center justify-between bg-blue-900/20 px-20 py-5">
       <div className="flex items-center gap-5">
         <img src={logo} alt="Lar de Jesus" className="w-15" />
         <h1 className="text-3xl font-bold">

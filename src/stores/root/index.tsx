@@ -4,12 +4,22 @@ import { Auth, AuthInitialData } from "./AuthStore";
 import { Doadores, DoadoresInitialData } from "./DoadoresStore";
 import { Historico, HistoricoInitialData } from "./HistoricoStore";
 import { Pagamentos, PagamentosInitialData } from "./PagamentosStore";
+import {
+  RelatorioMensal,
+  RelatorioMensalInitialData,
+} from "./RelatorioMensalStore";
+import {
+  RelatorioPeriodo,
+  RelatorioPeriodoInitialData,
+} from "./RelatorioPeriodoStore";
 
 export const Root = types.model({
   authCtrl: Auth,
   doadoresCtrl: Doadores,
   pagamentosCtrl: Pagamentos,
   historicoCtrl: Historico,
+  relatorioPeriodoCtrl: RelatorioPeriodo,
+  relatorioMensalCtrl: RelatorioMensal,
 });
 
 export type IRootStore = Instance<typeof Root>;
@@ -20,4 +30,6 @@ export const RootInitialData: IRoot = {
   doadoresCtrl: DoadoresInitialData,
   pagamentosCtrl: PagamentosInitialData,
   historicoCtrl: HistoricoInitialData,
+  relatorioPeriodoCtrl: RelatorioPeriodoInitialData,
+  relatorioMensalCtrl: RelatorioMensalInitialData,
 };

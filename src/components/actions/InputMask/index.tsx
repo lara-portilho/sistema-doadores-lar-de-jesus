@@ -25,7 +25,7 @@ export const InputMask = ({
   const elRef = useRef(null);
 
   return (
-    <label className={cn("flex flex-col relative", className)}>
+    <label className={cn("relative flex flex-col", className)}>
       <span className="font-medium">{label}</span>
       <IMaskInput
         {...props}
@@ -35,7 +35,7 @@ export const InputMask = ({
         onAccept={(value) => {
           onChange({ target: { name, value } });
         }}
-        className="bg-white border-b-2 border-blue-900 rounded-t-sm outline-0 px-1.5 py-0.5 my-0.5"
+        className="my-0.5 rounded-t-sm border-b-2 border-blue-900 bg-white px-1.5 py-0.5 outline-0"
       />
 
       {error ? (

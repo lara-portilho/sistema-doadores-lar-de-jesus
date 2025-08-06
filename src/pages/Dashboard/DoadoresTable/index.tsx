@@ -4,24 +4,32 @@ import { IconButton } from "@components/actions/IconButton";
 import { TextInput } from "@components/actions/TextInput";
 import {
   AddIcon,
+  CalendarIcon,
   DeleteIcon,
   EditIcon,
   HistoryIcon,
   MoneyIcon,
   SearchIcon,
+  TableIcon,
 } from "@components/icons";
 import { useStore } from "@hooks/useStore";
 import { getDepartamentosLabel } from "@stores/entities/enums/Departamentos";
 import { getTiposDoadorLabel } from "@stores/entities/enums/TiposDoador";
-import { format, parseISO } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { formatDateString } from "@utils/formatDateString";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 
 export const DoadoresTable = observer(() => {
-  const { authCtrl, doadoresCtrl, pagamentosCtrl, historicoCtrl } = useStore();
+  const {
+    authCtrl,
+    doadoresCtrl,
+    pagamentosCtrl,
+    historicoCtrl,
+    relatorioPeriodoCtrl,
+    relatorioMensalCtrl,
+  } = useStore();
   const [search, setSearch] = useState("");
 
   async function handleDelete(id: string) {
@@ -54,7 +62,7 @@ export const DoadoresTable = observer(() => {
 
   return (
     <>
-      <div className="flex justify-between items-start">
+      <div className="flex items-start justify-between">
         <TextInput
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -64,15 +72,25 @@ export const DoadoresTable = observer(() => {
           icon={<SearchIcon className="size-4" />}
         />
         {authCtrl.isEdit && (
-          <Button onClick={() => doadoresCtrl.setModalOpen()}>
-            <AddIcon />
-            Cadastrar doador
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={() => relatorioMensalCtrl.setModalOpen()}>
+              <TableIcon />
+              Relatório mensal
+            </Button>
+            <Button onClick={() => relatorioPeriodoCtrl.setModalOpen()}>
+              <CalendarIcon />
+              Relatório por período
+            </Button>
+            <Button onClick={() => doadoresCtrl.setModalOpen()}>
+              <AddIcon />
+              Cadastrar doador
+            </Button>
+          </div>
         )}
       </div>
-      <table className="bg-white w-full rounded-lg table-fixed">
+      <table className="w-full table-fixed rounded-lg bg-white">
         <thead>
-          <tr className="[&>th]:py-1 [&>th]:border-r [&>th]:border-gray-300 [&>th]:last:border-0">
+          <tr className="[&>th]:border-r [&>th]:border-gray-300 [&>th]:py-1 [&>th]:last:border-0">
             <th>Nome</th>
             <th>Tipo</th>
             <th>Departamento</th>
@@ -83,14 +101,14 @@ export const DoadoresTable = observer(() => {
           </tr>
         </thead>
         <tbody>
-          {doadoresCtrl.doadores
+          {doadoresCtrl.filteredDoadores
             ?.filter((doador) =>
               doador.nome.toLowerCase().includes(search.toLowerCase()),
             )
             .map((doador) => (
               <tr
                 key={doador.id}
-                className="border-t border-gray-300 [&>td]:py-0.5 [&>td]:px-1.5 [&>td]:border-r [&>td]:border-gray-300 [&>td]:last:border-0"
+                className="border-t border-gray-300 [&>td]:border-r [&>td]:border-gray-300 [&>td]:px-1.5 [&>td]:py-0.5 [&>td]:last:border-0"
               >
                 <td>{doador.nome}</td>
                 <td>{getTiposDoadorLabel(doador.tipo)}</td>
@@ -98,16 +116,12 @@ export const DoadoresTable = observer(() => {
                 <td>R$ {doador.valor.toFixed(2).replace(".", ",")}</td>
                 <td>
                   {doador.dataUltimoPag
-                    ? format(parseISO(doador.dataUltimoPag), "dd/MM/yyyy", {
-                        locale: ptBR,
-                      })
+                    ? formatDateString(doador.dataUltimoPag, "dd/MM/yyyy")
                     : "Sem doações"}
                 </td>
                 <td>
                   {doador.ultimoMes
-                    ? format(parseISO(doador.ultimoMes), "MMM/yyyy", {
-                        locale: ptBR,
-                      })
+                    ? formatDateString(doador.ultimoMes, "MMM/yyyy")
                     : "Sem doações"}
                 </td>
                 {authCtrl.isEdit && (

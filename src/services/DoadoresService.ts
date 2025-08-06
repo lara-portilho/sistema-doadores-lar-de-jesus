@@ -4,7 +4,6 @@ import { IDoador } from "@stores/entities/Doador";
 import {
   addDoc,
   collection,
-  deleteDoc,
   doc,
   getDocs,
   updateDoc,
@@ -22,7 +21,7 @@ export const DoadoresService = {
   },
   addDoador: async (doador: DoadorDTO) => {
     const collectionRef = collection(db, "doadores");
-    await addDoc(collectionRef, doador);
+    await addDoc(collectionRef, { ...doador, excluido: false });
   },
   updateDoador: async (id: string, doador: DoadorDTO) => {
     const docRef = doc(db, "doadores", id);
@@ -30,6 +29,6 @@ export const DoadoresService = {
   },
   deleteDoador: async (id: string) => {
     const docRef = doc(db, "doadores", id);
-    await deleteDoc(docRef);
+    await updateDoc(docRef, { excluido: true });
   },
 };

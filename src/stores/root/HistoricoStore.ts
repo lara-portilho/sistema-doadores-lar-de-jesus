@@ -1,6 +1,13 @@
 import { PagamentosService } from "@services/PagamentosService";
 import { Pagamento } from "@stores/entities/Pagamento";
-import { cast, flow, Instance, SnapshotIn, types } from "mobx-state-tree";
+import {
+  cast,
+  flow,
+  Instance,
+  SnapshotIn,
+  toGenerator,
+  types,
+} from "mobx-state-tree";
 
 export const Historico = types
   .model({
@@ -11,8 +18,8 @@ export const Historico = types
   .actions((self) => ({
     getHistorico: flow(function* () {
       if (!self.selectedDoadorId) return;
-      const pagamentos = yield PagamentosService.getHistorico(
-        self.selectedDoadorId,
+      const pagamentos = yield* toGenerator(
+        PagamentosService.getHistorico(self.selectedDoadorId),
       );
       self.pagamentos = cast(pagamentos);
     }),

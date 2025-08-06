@@ -15,7 +15,7 @@ import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-type PagamentoFormValues = {
+export type PagamentoFormValues = {
   data: string;
   primeiroMesQuitado: string;
   ultimoMesQuitado: string;
@@ -49,17 +49,9 @@ export const PagamentoModal = observer(() => {
 
   async function onSubmit(data: PagamentoFormValues) {
     try {
-      if (!pagamentosCtrl.selectedDoadorId || !doador)
+      if (!pagamentosCtrl.selectedDoadorId || !doador || !doador.id)
         throw new Error("Houve um problema ao salvar o pagamento!");
-
-      await pagamentosCtrl.addPagamento({
-        doadorId: doador?.id,
-        data: data.data,
-        metodo: data.metodo,
-        valorExtra: data.valorExtra || 0,
-        primeiroMesQuitado: `${data.primeiroMesQuitado}-01`,
-        ultimoMesQuitado: `${data.ultimoMesQuitado}-01`,
-      });
+      await pagamentosCtrl.addPagamento(data, doador.id);
       doadoresCtrl.getDoadores();
       reset();
       pagamentosCtrl.setModalClose();
@@ -92,7 +84,7 @@ export const PagamentoModal = observer(() => {
       size="40rem"
     >
       <form onSubmit={handleSubmit(onSubmit)}>
-        <h1 className="font-bold text-2xl mb-2">
+        <h1 className="mb-2 text-2xl font-bold">
           Adicionar pagamento para {doador?.nome}
         </h1>
         <div className="flex justify-stretch gap-10">
@@ -172,7 +164,7 @@ export const PagamentoModal = observer(() => {
             step="0.01"
             placeholder="0,00"
             error={errors.valorExtra?.message}
-            icon={<RealIcon className="size-3 mt-1" />}
+            icon={<RealIcon className="mt-1 size-3" />}
             className="flex-1"
           />
         </div>

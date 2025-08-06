@@ -10,7 +10,7 @@ export const IconButton = ({ children, ...props }: IconButtonProps) => {
     <button
       {...props}
       className={cn(
-        "p-1 cursor-pointer rounded-full hover:bg-gray-300 transition-all",
+        "cursor-pointer rounded-full p-1 transition-all hover:bg-gray-300",
         props.className,
       )}
     >

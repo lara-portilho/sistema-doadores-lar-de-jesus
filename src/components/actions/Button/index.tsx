@@ -10,7 +10,7 @@ export const Button = ({ children, ...props }: ButtonProps) => {
     <button
       {...props}
       className={cn(
-        "bg-blue-900 text-white px-3 py-1 font-medium rounded-md cursor-pointer flex items-center justify-center gap-1.5 disabled:cursor-not-allowed disabled:bg-blue-900/80",
+        "flex cursor-pointer items-center justify-center gap-1.5 rounded-md bg-blue-900 px-3 py-1 font-medium text-white disabled:cursor-not-allowed disabled:bg-blue-900/80",
         props.className,
       )}
     >

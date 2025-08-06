@@ -31,7 +31,7 @@ export const Modal = ({ children, size, ...props }: ModalProps) => {
         },
       }}
     >
-      <div className="w-full h-full relative">
+      <div className="relative h-full w-full">
         <IconButton onClick={onClose} className="absolute top-0 right-0">
           <CloseIcon className="size-4" />
         </IconButton>

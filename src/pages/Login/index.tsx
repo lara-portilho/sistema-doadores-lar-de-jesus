@@ -1,9 +1,9 @@
-import { treatAuthErrors } from "@app/utils/treatAuthErrors";
 import logo from "@assets/logo.png";
 import { Button } from "@components/actions/Button";
 import { TextInput } from "@components/actions/TextInput";
 import { LoginIcon, Spinner } from "@components/icons";
 import { useStore } from "@hooks/useStore";
+import { treatAuthErrors } from "@utils/treatAuthErrors";
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
 import { useNavigate } from "react-router";
@@ -32,10 +32,10 @@ export const Login = observer(() => {
   }
 
   return (
-    <div className="w-screen h-screen flex justify-center items-center flex-col gap-5">
+    <div className="flex h-screen w-screen flex-col items-center justify-center gap-5">
       <img src={logo} alt="Lar de Jesus" className="w-36" />
       <h1 className="text-4xl font-bold">Sistema de Mensalidades e Doações</h1>
-      <form className="flex flex-col w-64" onSubmit={handleLogin}>
+      <form className="flex w-64 flex-col" onSubmit={handleLogin}>
         <TextInput
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -54,7 +54,7 @@ export const Login = observer(() => {
         />
         <Button type="submit" className="mt-1.5" disabled={loading}>
           {loading ? (
-            <Spinner className="size-4 text-white animate-spin" />
+            <Spinner className="size-4 animate-spin text-white" />
           ) : (
             <LoginIcon className="size-4 text-white" />
           )}

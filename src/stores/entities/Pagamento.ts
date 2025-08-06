@@ -9,8 +9,7 @@ export const Pagamento = types.model({
   valorExtra: types.maybeNull(types.number),
   valorTotal: types.number,
   metodo: types.frozen<TiposPagamento>(),
-  primeiroMesQuitado: types.string,
-  ultimoMesQuitado: types.string,
+  mesesQuitados: types.array(types.string),
 });
 
 export type IPagamentoStore = Instance<typeof Pagamento>;
@@ -24,6 +23,5 @@ export const PagamentoInitialData: IPagamento = {
   valorExtra: null,
   valorTotal: 0,
   metodo: TiposPagamento.Dinheiro,
-  primeiroMesQuitado: "",
-  ultimoMesQuitado: "",
+  mesesQuitados: [],
 };
