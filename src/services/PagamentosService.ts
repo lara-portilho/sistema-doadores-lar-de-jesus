@@ -1,6 +1,6 @@
-import { RelatorioMensalDTO } from "@app/dtos/RelatorioMensalDTO";
 import { db } from "@app/firebase";
 import { PagamentoDTO } from "@dtos/PagamentoDTO";
+import { RelatorioMensalDTO } from "@dtos/RelatorioMensalDTO";
 import { RelatorioPeriodoDTO } from "@dtos/RelatorioPeriodoDTO";
 import { IDoador } from "@stores/entities/Doador";
 import { IPagamento } from "@stores/entities/Pagamento";
@@ -61,7 +61,6 @@ export const PagamentosService = {
   getRelatorioMensal: async (
     data: RelatorioMensalDTO,
   ): Promise<IPagamento[]> => {
-    console.log(data);
     const collectionRef = collection(db, "pagamentos");
     const q = query(
       collectionRef,

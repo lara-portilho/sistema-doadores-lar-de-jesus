@@ -1,3 +1,4 @@
+import { TiposPagamento } from "@app/stores/entities/enums/TiposPagamento";
 import { IDoador } from "@stores/entities/Doador";
 import { IPagamento } from "@stores/entities/Pagamento";
 import { formatDateString } from "@utils/formatDateString";
@@ -12,6 +13,7 @@ type RelatorioMensalCsvFormat = {
   doador: string;
   tipoPagamento: string;
   dataPagamento: string;
+  pagoData: string;
 };
 
 export function formatRelatorioMensal({
@@ -19,10 +21,15 @@ export function formatRelatorioMensal({
   pagamentos,
   mes,
 }: FormatRelatorioMensalData) {
+  let sumPix = 0;
+  let sumCartao = 0;
+  let sumDinheiro = 0;
+
   const firstLine: RelatorioMensalCsvFormat = {
     doador: "DOADOR",
     tipoPagamento: "TIPO PAGAMENTO",
     dataPagamento: `DATA PAGAMENTO ${formatDateString(mes, "MMM/yyyy").toUpperCase()}`,
+    pagoData: "TOTAL PAGO NA DATA",
   };
 
   const csvData = [firstLine];
@@ -36,18 +43,34 @@ export function formatRelatorioMensal({
       pag.mesesQuitados?.includes(mes),
     );
 
-    console.log(doadores, filteredPagamentos, pagamentoRelacionado);
-
     const line: RelatorioMensalCsvFormat = {
       doador: doador.nome,
       tipoPagamento: pagamentoRelacionado?.metodo || "",
       dataPagamento: pagamentoRelacionado
         ? formatDateString(pagamentoRelacionado.data, "dd/MM/yyyy")
         : "",
+      pagoData: `R$${pagamentoRelacionado?.valorTotal.toFixed(2)}`,
     };
+
+    if (pagamentoRelacionado?.metodo === TiposPagamento.Pix) {
+      sumPix += pagamentoRelacionado.valorTotal;
+    } else if (pagamentoRelacionado?.metodo === TiposPagamento.Cartao) {
+      sumCartao += pagamentoRelacionado.valorTotal;
+    } else if (pagamentoRelacionado?.metodo === TiposPagamento.Dinheiro) {
+      sumDinheiro += pagamentoRelacionado.valorTotal;
+    }
 
     csvData.push(line);
   }
+
+  const lastLine: RelatorioMensalCsvFormat = {
+    doador: `PIX: R$${sumPix.toFixed(2)}`,
+    tipoPagamento: `CARTAO: R$${sumCartao.toFixed(2)}`,
+    dataPagamento: `DINHEIRO: R$${sumDinheiro.toFixed(2)}`,
+    pagoData: "",
+  };
+
+  csvData.push(lastLine);
 
   return csvData;
 }
