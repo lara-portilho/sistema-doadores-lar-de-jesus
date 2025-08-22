@@ -23,7 +23,13 @@ export const Doadores = types
       );
     },
     get filteredDoadores() {
-      return self.doadores.filter((doador) => !doador.excluido);
+      return self.doadores
+        .filter((doador) => !doador.excluido)
+        .sort((a, b) => {
+          const nameA = a.nome.toLowerCase();
+          const nameB = b.nome.toLowerCase();
+          return nameA.localeCompare(nameB);
+        });
     },
   }))
   .actions((self) => ({

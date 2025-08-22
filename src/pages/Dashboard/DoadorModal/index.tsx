@@ -91,7 +91,6 @@ export const DoadorModal = observer(() => {
           />
           <InputMask
             {...register("cpf", {
-              required: "Esse campo é necessário!",
               pattern: {
                 value: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
                 message: "Insira um CPF válido!",
@@ -107,7 +106,6 @@ export const DoadorModal = observer(() => {
         <div className="flex justify-stretch gap-10">
           <InputMask
             {...register("telefone", {
-              required: "Esse campo é necessário!",
               pattern: {
                 value: /(\((\d{2})\)) (9?\d{4})-(\d{4})/,
                 message: "Insira um telefone válido!",
@@ -121,7 +119,6 @@ export const DoadorModal = observer(() => {
           />
           <TextInput
             {...register("email", {
-              required: "Esse campo é necessário!",
               pattern: {
                 value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
                 message: "Insira um email válido!",
@@ -134,20 +131,20 @@ export const DoadorModal = observer(() => {
           />
         </div>{" "}
         <TextInput
-          {...register("endereco", { required: "Esse campo é necessário!" })}
+          {...register("endereco")}
           label="Endereço"
-          error={errors.nome?.message}
+          error={errors.endereco?.message}
           placeholder="Rua, CEP, Cidade..."
           className="flex-1"
         />
         <div className="flex justify-stretch gap-10">
           <TextInput
             {...register("aniversario", {
-              required: "Esse campo é necessário!",
-              validate: (value) =>
-                new Date(value) < new Date()
-                  ? true
-                  : "O aniversário deve ser anterior à data atual!",
+              validate: (value) => {
+                if (!value) return true;
+                if (new Date(value) < new Date()) return true;
+                return "O aniversário deve ser anterior à data atual!";
+              },
             })}
             label="Aniversário"
             type="date"
@@ -189,8 +186,8 @@ export const DoadorModal = observer(() => {
               label: getDepartamentosLabel(departamento),
               value: departamento,
             }))}
-            label="Tipo de doador"
-            error={errors.tipo?.message}
+            label="Departamento"
+            error={errors.departamento?.message}
             className="flex-1"
           />
         </div>
