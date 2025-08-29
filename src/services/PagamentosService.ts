@@ -7,6 +7,7 @@ import { IPagamento } from "@stores/entities/Pagamento";
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -31,6 +32,31 @@ export const PagamentosService = {
     await updateDoc(doadorRef, {
       ultimoMes: ultimoMes,
       dataUltimoPag: pagamento.data,
+    });
+  },
+  deletePagamento: async (
+    id: string,
+    props?: {
+      doadorId: string;
+      pagamentoAnterior?: IPagamento;
+    },
+  ) => {
+    const docRef = doc(db, "pagamentos", id);
+    await deleteDoc(docRef);
+
+    if (!props) return;
+    const { doadorId, pagamentoAnterior } = props;
+
+    const doadorRef = doc(db, "doadores", doadorId);
+    if (!pagamentoAnterior) {
+      await updateDoc(doadorRef, { dataUltimoPag: "", ultimoMes: "" });
+      return;
+    }
+
+    const ultimoMesIndex = pagamentoAnterior.mesesQuitados ? pagamentoAnterior.mesesQuitados?.length - 1 : 0;
+    await updateDoc(doadorRef, {
+      dataUltimoPag: pagamentoAnterior.data,
+      ultimoMes: pagamentoAnterior.mesesQuitados?.[ultimoMesIndex],
     });
   },
   getHistorico: async (doadorId: string): Promise<IPagamento[]> => {

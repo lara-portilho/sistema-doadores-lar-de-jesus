@@ -97,7 +97,7 @@ export const DoadoresTable = observer(() => {
             <th>Valor</th>
             <th>Data último pagamento</th>
             <th>Último mês quitado</th>
-            {authCtrl.isEdit && <th className="w-28" />}
+            <th className={authCtrl.isEdit ? "w-28" : "w-5"} />
           </tr>
         </thead>
         <tbody>
@@ -124,28 +124,30 @@ export const DoadoresTable = observer(() => {
                     ? formatDateString(doador.ultimoMes, "MMM/yyyy")
                     : "Sem doações"}
                 </td>
-                {authCtrl.isEdit && (
-                  <td className="text-center">
-                    <IconButton
-                      onClick={() => historicoCtrl.setModalOpen(doador.id)}
-                    >
-                      <HistoryIcon className="size-4 text-blue-500" />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => pagamentosCtrl.setModalOpen(doador.id)}
-                    >
-                      <MoneyIcon className="size-4 text-green-500" />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => doadoresCtrl.setModalOpen(doador.id)}
-                    >
-                      <EditIcon className="size-4" />
-                    </IconButton>
-                    <IconButton onClick={() => handleDelete(doador.id)}>
-                      <DeleteIcon className="size-4 text-red-500" />
-                    </IconButton>
-                  </td>
-                )}
+                <td className="text-center">
+                  <IconButton
+                    onClick={() => historicoCtrl.setModalOpen(doador.id)}
+                  >
+                    <HistoryIcon className="size-4 text-blue-500" />
+                  </IconButton>
+                  {authCtrl.isEdit && (
+                    <>
+                      <IconButton
+                        onClick={() => pagamentosCtrl.setModalOpen(doador.id)}
+                      >
+                        <MoneyIcon className="size-4 text-green-500" />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => doadoresCtrl.setModalOpen(doador.id)}
+                      >
+                        <EditIcon className="size-4" />
+                      </IconButton>
+                      <IconButton onClick={() => handleDelete(doador.id)}>
+                        <DeleteIcon className="size-4 text-red-500" />
+                      </IconButton>
+                    </>
+                  )}
+                </td>
               </tr>
             ))}
         </tbody>

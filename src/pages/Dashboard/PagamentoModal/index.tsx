@@ -123,7 +123,7 @@ export const PagamentoModal = observer(() => {
                     isBefore(dataInicio, ultimoPagamento) ||
                     isEqual(dataInicio, ultimoPagamento)
                   )
-                    return "A data inicial deve ser posterior à data da última doação!";
+                    return "O mês inicial deve ser posterior ao último mês quitado!";
                   return true;
                 },
               },

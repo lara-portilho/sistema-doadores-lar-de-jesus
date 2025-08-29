@@ -1,20 +1,44 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { DeleteIcon } from "@components/icons";
+import { IconButton } from "@components/actions/IconButton";
 import { Modal } from "@components/layout/Modal";
 import { useStore } from "@hooks/useStore";
 import { getTiposPagamentoLabel } from "@stores/entities/enums/TiposPagamento";
 import { formatDateString } from "@utils/formatDateString";
 import { observer } from "mobx-react-lite";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 export const HistoricoModal = observer(() => {
-  const { historicoCtrl, doadoresCtrl } = useStore();
-  const doador = useMemo(
-    () =>
-      doadoresCtrl.doadores.find(
-        (doador) => doador.id === historicoCtrl.selectedDoadorId,
-      ),
-    [doadoresCtrl.doadores.length, historicoCtrl.selectedDoadorId],
+  const { historicoCtrl, doadoresCtrl, authCtrl } = useStore();
+  const doador = doadoresCtrl.doadores.find(
+    (doador) => doador.id === historicoCtrl.selectedDoadorId,
   );
+
+  async function handleDelete(id: string, sobrescrever: boolean) {
+    try {
+      const { isConfirmed } = await Swal.fire({
+        title: "Atenção!",
+        text: "Tem certeza que deseja excluir esse pagamento?",
+        icon: "warning",
+        confirmButtonText: "Excluir",
+        confirmButtonColor: "#fb2c36",
+        showCancelButton: true,
+        cancelButtonText: "Cancelar",
+        cancelButtonColor: "#919090",
+        reverseButtons: true,
+      });
+      if (!isConfirmed) return;
+      await historicoCtrl.deletePagamento(id, sobrescrever);
+      await historicoCtrl.getHistorico();
+      await doadoresCtrl.getDoadores();
+      toast.success("Doador excluído com sucesso!");
+    } catch (err) {
+      toast.error("Houve algum erro ao excluir o doador!");
+      console.log(err);
+    }
+  }
 
   useEffect(() => {
     historicoCtrl.getHistorico();
@@ -31,7 +55,7 @@ export const HistoricoModal = observer(() => {
       <h1 className="mb-2 text-2xl font-bold">
         Histórico de pagamentos de {doador?.nome}
       </h1>
-      {historicoCtrl.pagamentos.length ? (
+      {historicoCtrl.filteredPagamentos.length ? (
         <table className="w-full table-fixed rounded-lg bg-white">
           <thead>
             <tr className="[&>th]:border-r [&>th]:border-gray-300 [&>th]:py-1 [&>th]:last:border-0">
@@ -41,10 +65,11 @@ export const HistoricoModal = observer(() => {
               <th>Valor total</th>
               <th>Método</th>
               <th className="w-56">Meses pagos</th>
+              {authCtrl.isEdit && <th className="w-5" />}
             </tr>
           </thead>
           <tbody>
-            {historicoCtrl.pagamentos.map((pagamento) => {
+            {historicoCtrl.filteredPagamentos.map((pagamento, index) => {
               const mesesPagos =
                 (pagamento.valorTotal - (pagamento.valorExtra ?? 0)) /
                 pagamento.valorMensalidade;
@@ -80,6 +105,15 @@ export const HistoricoModal = observer(() => {
                       </>
                     )}
                   </td>
+                  {authCtrl.isEdit && (
+                    <td>
+                      <IconButton
+                        onClick={() => handleDelete(pagamento.id, index === 0)}
+                      >
+                        <DeleteIcon className="size-4 text-red-500" />
+                      </IconButton>
+                    </td>
+                  )}
                 </tr>
               );
             })}
