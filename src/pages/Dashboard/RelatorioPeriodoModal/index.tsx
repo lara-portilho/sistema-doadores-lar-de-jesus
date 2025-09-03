@@ -1,6 +1,7 @@
 import { Button } from "@components/actions/Button";
 import { RadioInput } from "@components/actions/RadioInput";
 import { TextInput } from "@components/actions/TextInput";
+import { CalendarIcon, Spinner } from "@components/icons";
 import { Modal } from "@components/layout/Modal";
 import { useStore } from "@hooks/useStore";
 import {
@@ -30,7 +31,7 @@ export const RelatorioPeriodoModal = observer(() => {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<RelatorioPeriodoFormValues>({
     defaultValues: {
       tipoDoador: TiposDoador.Efetivo,
@@ -109,7 +110,12 @@ export const RelatorioPeriodoModal = observer(() => {
             />
           </div>
         </div>
-        <Button type="submit" className="ml-auto">
+        <Button type="submit" className="ml-auto" disabled={isSubmitting}>
+          {isSubmitting ? (
+            <Spinner className="size-4 animate-spin text-white" />
+          ) : (
+            <CalendarIcon className="size-4 text-white" />
+          )}
           Gerar relatório
         </Button>
       </form>

@@ -8,6 +8,7 @@ import {
   DeleteIcon,
   EditIcon,
   HistoryIcon,
+  ListIcon,
   MoneyIcon,
   SearchIcon,
   TableIcon,
@@ -29,6 +30,7 @@ export const DoadoresTable = observer(() => {
     historicoCtrl,
     relatorioPeriodoCtrl,
     relatorioMensalCtrl,
+    relatorioDescritivoCtrl,
   } = useStore();
   const [search, setSearch] = useState("");
 
@@ -73,6 +75,10 @@ export const DoadoresTable = observer(() => {
         />
         {authCtrl.isEdit && (
           <div className="flex gap-2">
+            <Button onClick={() => relatorioDescritivoCtrl.setModalOpen()}>
+              <ListIcon />
+              Relatório descritivo
+            </Button>
             <Button onClick={() => relatorioMensalCtrl.setModalOpen()}>
               <TableIcon />
               Relatório mensal

@@ -10,10 +10,10 @@ type FormatRelatorioMensalData = {
 };
 
 type RelatorioMensalCsvFormat = {
-  doador: string;
-  tipoPagamento: string;
-  dataPagamento: string;
-  pagoData: string;
+  column1: string;
+  column2: string;
+  column3: string;
+  column4: string;
 };
 
 export function formatRelatorioMensal({
@@ -24,12 +24,13 @@ export function formatRelatorioMensal({
   let sumPix = 0;
   let sumCartao = 0;
   let sumDinheiro = 0;
+  let sumTev = 0;
 
   const firstLine: RelatorioMensalCsvFormat = {
-    doador: "DOADOR",
-    tipoPagamento: "TIPO PAGAMENTO",
-    dataPagamento: `DATA PAGAMENTO ${formatDateString(mes, "MMM/yyyy").toUpperCase()}`,
-    pagoData: "TOTAL PAGO NA DATA",
+    column1: "DOADOR",
+    column2: "TIPO PAGAMENTO",
+    column3: `DATA PAGAMENTO ${formatDateString(mes, "MMM/yyyy").toUpperCase()}`,
+    column4: "TOTAL PAGO NA DATA",
   };
 
   const csvData = [firstLine];
@@ -44,12 +45,12 @@ export function formatRelatorioMensal({
     );
 
     const line: RelatorioMensalCsvFormat = {
-      doador: doador.nome,
-      tipoPagamento: pagamentoRelacionado?.metodo || "",
-      dataPagamento: pagamentoRelacionado
+      column1: doador.nome,
+      column2: pagamentoRelacionado?.metodo || "",
+      column3: pagamentoRelacionado
         ? formatDateString(pagamentoRelacionado.data, "dd/MM/yyyy")
         : "",
-      pagoData: `R$${pagamentoRelacionado?.valorTotal.toFixed(2)}`,
+      column4: `R$${pagamentoRelacionado?.valorTotal.toFixed(2)}`,
     };
 
     if (pagamentoRelacionado?.metodo === TiposPagamento.Pix) {
@@ -58,16 +59,18 @@ export function formatRelatorioMensal({
       sumCartao += pagamentoRelacionado.valorTotal;
     } else if (pagamentoRelacionado?.metodo === TiposPagamento.Dinheiro) {
       sumDinheiro += pagamentoRelacionado.valorTotal;
+    } else if (pagamentoRelacionado?.metodo === TiposPagamento.TEV) {
+      sumTev += pagamentoRelacionado.valorTotal;
     }
 
     csvData.push(line);
   }
 
   const lastLine: RelatorioMensalCsvFormat = {
-    doador: `PIX: R$${sumPix.toFixed(2)}`,
-    tipoPagamento: `CARTAO: R$${sumCartao.toFixed(2)}`,
-    dataPagamento: `DINHEIRO: R$${sumDinheiro.toFixed(2)}`,
-    pagoData: "",
+    column1: `PIX: R$${sumPix.toFixed(2)}`,
+    column2: `CARTAO: R$${sumCartao.toFixed(2)}`,
+    column3: `DINHEIRO: R$${sumDinheiro.toFixed(2)}`,
+    column4: `TEV: R$${sumTev.toFixed(2)}`,
   };
 
   csvData.push(lastLine);

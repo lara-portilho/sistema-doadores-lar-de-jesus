@@ -12,4 +12,5 @@ export {
   MdAttachMoney as MoneyIcon,
   MdSearch as SearchIcon,
   MdOutlineTableChart as TableIcon,
+  MdOutlineListAlt as ListIcon,
 } from "react-icons/md";
