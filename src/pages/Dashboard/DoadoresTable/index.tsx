@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Button } from "@components/actions/Button";
 import { IconButton } from "@components/actions/IconButton";
+import { Select } from "@components/actions/Select";
 import { TextInput } from "@components/actions/TextInput";
 import {
   AddIcon,
@@ -15,7 +16,10 @@ import {
 } from "@components/icons";
 import { useStore } from "@hooks/useStore";
 import { getDepartamentosLabel } from "@stores/entities/enums/Departamentos";
-import { getTiposDoadorLabel } from "@stores/entities/enums/TiposDoador";
+import {
+  getTiposDoadorLabel,
+  TiposDoador,
+} from "@stores/entities/enums/TiposDoador";
 import { formatDateString } from "@utils/formatDateString";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
@@ -33,6 +37,16 @@ export const DoadoresTable = observer(() => {
     relatorioDescritivoCtrl,
   } = useStore();
   const [search, setSearch] = useState("");
+  const [tipoFilter, setTipoFilter] = useState<TiposDoador | undefined>();
+
+  const filteredDoadores = doadoresCtrl.filteredDoadores?.filter((doador) => {
+    if (tipoFilter === undefined)
+      return doador.nome.toLowerCase().includes(search.toLowerCase());
+    return (
+      doador.nome.toLowerCase().includes(search.toLowerCase()) &&
+      doador.tipo === tipoFilter
+    );
+  });
 
   async function handleDelete(id: string) {
     try {
@@ -64,15 +78,28 @@ export const DoadoresTable = observer(() => {
 
   return (
     <>
-      <div className="flex items-start justify-between">
-        <TextInput
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-1/3"
-          placeholder="Pesquisar"
-          onClear={() => setSearch("")}
-          icon={<SearchIcon className="size-4" />}
-        />
+      <div className="flex items-start justify-between gap-10">
+        <div className="flex w-1/4 flex-1 items-end gap-2">
+          <TextInput
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="flex-1"
+            placeholder="Pesquisar"
+            onClear={() => setSearch("")}
+            icon={<SearchIcon className="size-4" />}
+          />
+          <Select
+            value={tipoFilter}
+            onChange={(e) => setTipoFilter(e.target.value as TiposDoador)}
+            options={Object.values(TiposDoador).map((tipo) => ({
+              label: getTiposDoadorLabel(tipo),
+              value: tipo,
+            }))}
+            className="min-w-48"
+            onClear={() => setTipoFilter(undefined)}
+            clearMessage="Filtre por tipo"
+          />
+        </div>
         {authCtrl.isEdit && (
           <div className="flex gap-2">
             <Button onClick={() => relatorioDescritivoCtrl.setModalOpen()}>
@@ -107,55 +134,51 @@ export const DoadoresTable = observer(() => {
           </tr>
         </thead>
         <tbody>
-          {doadoresCtrl.filteredDoadores
-            ?.filter((doador) =>
-              doador.nome.toLowerCase().includes(search.toLowerCase()),
-            )
-            .map((doador) => (
-              <tr
-                key={doador.id}
-                className="border-t border-gray-300 [&>td]:border-r [&>td]:border-gray-300 [&>td]:px-1.5 [&>td]:py-0.5 [&>td]:last:border-0"
-              >
-                <td>{doador.nome}</td>
-                <td>{getTiposDoadorLabel(doador.tipo)}</td>
-                <td>{getDepartamentosLabel(doador.departamento)}</td>
-                <td>R$ {doador.valor.toFixed(2).replace(".", ",")}</td>
-                <td>
-                  {doador.dataUltimoPag
-                    ? formatDateString(doador.dataUltimoPag, "dd/MM/yyyy")
-                    : "Sem doações"}
-                </td>
-                <td>
-                  {doador.ultimoMes
-                    ? formatDateString(doador.ultimoMes, "MMM/yyyy")
-                    : "Sem doações"}
-                </td>
-                <td className="text-center">
-                  <IconButton
-                    onClick={() => historicoCtrl.setModalOpen(doador.id)}
-                  >
-                    <HistoryIcon className="size-4 text-blue-500" />
-                  </IconButton>
-                  {authCtrl.isEdit && (
-                    <>
-                      <IconButton
-                        onClick={() => pagamentosCtrl.setModalOpen(doador.id)}
-                      >
-                        <MoneyIcon className="size-4 text-green-500" />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => doadoresCtrl.setModalOpen(doador.id)}
-                      >
-                        <EditIcon className="size-4" />
-                      </IconButton>
-                      <IconButton onClick={() => handleDelete(doador.id)}>
-                        <DeleteIcon className="size-4 text-red-500" />
-                      </IconButton>
-                    </>
-                  )}
-                </td>
-              </tr>
-            ))}
+          {filteredDoadores.map((doador) => (
+            <tr
+              key={doador.id}
+              className="border-t border-gray-300 [&>td]:border-r [&>td]:border-gray-300 [&>td]:px-1.5 [&>td]:py-0.5 [&>td]:last:border-0"
+            >
+              <td>{doador.nome}</td>
+              <td>{getTiposDoadorLabel(doador.tipo)}</td>
+              <td>{getDepartamentosLabel(doador.departamento)}</td>
+              <td>R$ {doador.valor.toFixed(2).replace(".", ",")}</td>
+              <td>
+                {doador.dataUltimoPag
+                  ? formatDateString(doador.dataUltimoPag, "dd/MM/yyyy")
+                  : "Sem doações"}
+              </td>
+              <td>
+                {doador.ultimoMes
+                  ? formatDateString(doador.ultimoMes, "MMM/yyyy")
+                  : "Sem doações"}
+              </td>
+              <td className="text-center">
+                <IconButton
+                  onClick={() => historicoCtrl.setModalOpen(doador.id)}
+                >
+                  <HistoryIcon className="size-4 text-blue-500" />
+                </IconButton>
+                {authCtrl.isEdit && (
+                  <>
+                    <IconButton
+                      onClick={() => pagamentosCtrl.setModalOpen(doador.id)}
+                    >
+                      <MoneyIcon className="size-4 text-green-500" />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => doadoresCtrl.setModalOpen(doador.id)}
+                    >
+                      <EditIcon className="size-4" />
+                    </IconButton>
+                    <IconButton onClick={() => handleDelete(doador.id)}>
+                      <DeleteIcon className="size-4 text-red-500" />
+                    </IconButton>
+                  </>
+                )}
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </>
