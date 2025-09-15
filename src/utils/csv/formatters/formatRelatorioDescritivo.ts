@@ -70,28 +70,36 @@ export function formatRelatorioDescritivo({
       const doador = doadores.find(
         (doador) => doador.id === pagamento.doadorId,
       );
-      if (pagamento.mesesQuitados === undefined) continue;
+
+      if (
+        pagamento.mesesQuitados === undefined ||
+        pagamento.mesesQuitados.length === 0
+      )
+        continue;
+
       let mesesQuitadosString = formatDateString(
-        pagamento.mesesQuitados[0] || "",
+        pagamento.mesesQuitados[0],
         "MMM/yyyy",
       ).toUpperCase();
+
       if (pagamento.mesesQuitados.length > 1)
-        mesesQuitadosString += ` à ${formatDateString(pagamento.mesesQuitados?.[pagamento.mesesQuitados.length - 1] || "", "MMM/yyyy").toUpperCase()}`;
+        mesesQuitadosString += ` à ${formatDateString(pagamento.mesesQuitados[pagamento.mesesQuitados.length - 1], "MMM/yyyy").toUpperCase()}`;
 
       lines.push({
         column1: doador?.nome || "",
         column2: pagamento.metodo,
         column3: mesesQuitadosString,
-        column4: `R$${pagamento.valorExtra?.toFixed(2)}`,
-        column5: `R$${pagamento.valorTotal?.toFixed(2)}`,
+        column4: `R$${(pagamento.valorExtra || 0).toFixed(2)}`,
+        column5: `R$${pagamento.valorTotal.toFixed(2)}`,
       });
-      if (pagamento?.metodo === TiposPagamento.Pix) {
+
+      if (pagamento.metodo === TiposPagamento.Pix) {
         sumPix += pagamento.valorTotal;
-      } else if (pagamento?.metodo === TiposPagamento.Cartao) {
+      } else if (pagamento.metodo === TiposPagamento.Cartao) {
         sumCartao += pagamento.valorTotal;
-      } else if (pagamento?.metodo === TiposPagamento.Dinheiro) {
+      } else if (pagamento.metodo === TiposPagamento.Dinheiro) {
         sumDinheiro += pagamento.valorTotal;
-      } else if (pagamento?.metodo === TiposPagamento.TEV) {
+      } else if (pagamento.metodo === TiposPagamento.TEV) {
         sumTev += pagamento.valorTotal;
       }
     }

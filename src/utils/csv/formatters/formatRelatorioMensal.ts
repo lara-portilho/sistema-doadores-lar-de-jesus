@@ -50,7 +50,9 @@ export function formatRelatorioMensal({
       column3: pagamentoRelacionado
         ? formatDateString(pagamentoRelacionado.data, "dd/MM/yyyy")
         : "",
-      column4: `R$${pagamentoRelacionado?.valorTotal.toFixed(2)}`,
+      column4: pagamentoRelacionado
+        ? `R$${pagamentoRelacionado.valorTotal.toFixed(2)}`
+        : "",
     };
 
     if (pagamentoRelacionado?.metodo === TiposPagamento.Pix) {
