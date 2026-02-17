@@ -4,7 +4,7 @@ export function generateCsv<T>(data: T[]) {
   for (const obj of data) {
     let line = "";
     for (const index in obj) {
-      if (line !== "") line += ",";
+      if (line !== "") line += ";";
 
       line += obj[index];
     }

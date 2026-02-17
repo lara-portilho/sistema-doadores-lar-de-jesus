@@ -10,7 +10,6 @@
     ],
     "module": "ESNext",
     "skipLibCheck": true,
-    /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
@@ -31,6 +30,15 @@
       "@dtos/*": [
         "src/dtos/*"
       ],
+      "@entities/*": [
+        "src/entities/*"
+      ],
+      "@enums/*": [
+        "src/enums/*"
+      ],
+      "@forms/*": [
+        "src/forms/*"
+      ],
       "@hooks/*": [
         "src/hooks/*"
       ],
@@ -50,7 +58,6 @@
         "src/*"
       ]
     },
-    /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,

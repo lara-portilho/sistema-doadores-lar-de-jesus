@@ -1,10 +1,10 @@
-import { IDoador } from "@stores/entities/Doador";
-import { IPagamento } from "@stores/entities/Pagamento";
+import { Doador } from "@entities/Doador";
+import { Pagamento } from "@entities/Pagamento";
 import { formatDateString } from "@utils/formatDateString";
 
 type FormatRelatorioPeriodoData = {
-  doadores: IDoador[];
-  pagamentos: IPagamento[];
+  doadores: Doador[];
+  pagamentos: Pagamento[];
   meses: string[];
 };
 

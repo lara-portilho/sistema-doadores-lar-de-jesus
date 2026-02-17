@@ -1,15 +1,8 @@
+import { Pagamento } from "@entities/Pagamento";
 import { PagamentosService } from "@services/PagamentosService";
-import { Pagamento } from "@stores/entities/Pagamento";
-import {
-  cast,
-  flow,
-  Instance,
-  SnapshotIn,
-  toGenerator,
-  types,
-} from "mobx-state-tree";
+import { cast, flow, SnapshotIn, toGenerator, types } from "mobx-state-tree";
 
-export const Historico = types
+export const HistoricoCtrl = types
   .model({
     pagamentos: types.array(Pagamento),
     modalOpen: types.boolean,
@@ -69,10 +62,9 @@ export const Historico = types
     },
   }));
 
-export type IHistoricoStore = Instance<typeof Historico>;
-export type IHistorico = SnapshotIn<typeof Historico>;
+export type HistoricoCtrl = SnapshotIn<typeof HistoricoCtrl>;
 
-export const HistoricoInitialData: IHistorico = {
+export const HistoricoCtrlInitialData: HistoricoCtrl = {
   pagamentos: [],
   modalOpen: false,
 };

@@ -1,33 +1,38 @@
-import { IconButton } from "@components/actions/IconButton";
-import { CloseIcon } from "@components/icons";
 import cn from "classnames";
 import React from "react";
 
-type TextInputProps = React.DetailedHTMLProps<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  HTMLInputElement
-> & {
+import { IMaskInput, IMaskInputProps } from "react-imask";
+
+type MaskInputProps = IMaskInputProps<HTMLInputElement> & {
   label?: React.ReactNode;
   error?: React.ReactNode;
   icon?: React.ReactNode;
-  onClear?: () => void;
+  onChange: (event: { target: { name: string; value: string } }) => void;
+  name: string;
+  ref?: React.Ref<HTMLInputElement>;
 };
 
-export const TextInput = ({
+export const MaskInput = ({
   className,
   label,
   error,
   icon,
-  onClear,
+  onChange,
+  name,
+  ref,
   ...props
-}: TextInputProps) => {
+}: MaskInputProps) => {
   return (
-    <label className={cn("flex flex-col", className)}>
+    <label className={cn("relative flex flex-col", className)}>
       <span className="font-medium">{label}</span>
       <div className="relative">
         {!!icon && <div className="absolute top-2 left-1">{icon}</div>}
-        <input
+        <IMaskInput
           {...props}
+          inputRef={ref}
+          onAccept={(value) => {
+            onChange({ target: { name, value } });
+          }}
           className={cn(
             "my-0.5 w-full rounded-t-sm border-b-2 border-blue-900 bg-white px-1.5 py-0.5 outline-0",
             {
@@ -35,11 +40,6 @@ export const TextInput = ({
             },
           )}
         />
-        {!!onClear && (
-          <IconButton className="absolute top-1 right-0.5" onClick={onClear}>
-            <CloseIcon className="size-4" />
-          </IconButton>
-        )}
       </div>
 
       {error ? (

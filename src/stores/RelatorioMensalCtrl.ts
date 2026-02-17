@@ -1,26 +1,20 @@
-import { RelatorioMensalFormValues } from "@pages/Dashboard/RelatorioMensalModal";
+import { Doador } from "@entities/Doador";
+import { RelatorioMensalFormValues } from "@forms/RelatorioMensalForm";
 import { PagamentosService } from "@services/PagamentosService";
 import { formatRelatorioMensal } from "@utils/csv/formatters/formatRelatorioMensal";
 import { generateCsv } from "@utils/csv/generateCsv";
 import { formatDateString } from "@utils/formatDateString";
 import { saveAs } from "file-saver";
-import {
-  flow,
-  Instance,
-  SnapshotIn,
-  toGenerator,
-  types,
-} from "mobx-state-tree";
-import { IDoador } from "../entities/Doador";
+import { flow, SnapshotIn, toGenerator, types } from "mobx-state-tree";
 
-export const RelatorioMensal = types
+export const RelatorioMensalCtrl = types
   .model({
     modalOpen: types.boolean,
   })
   .actions((self) => ({
     generateRelatorio: flow(function* (
       data: RelatorioMensalFormValues,
-      doadores: IDoador[],
+      doadores: Doador[],
     ) {
       const filteredDoadores = doadores.filter(
         (doador) => doador.tipo === data.tipoDoador,
@@ -56,9 +50,8 @@ export const RelatorioMensal = types
     },
   }));
 
-export type IRelatorioMensalStore = Instance<typeof RelatorioMensal>;
-export type IRelatorioMensal = SnapshotIn<typeof RelatorioMensal>;
+export type RelatorioMensalCtrl = SnapshotIn<typeof RelatorioMensalCtrl>;
 
-export const RelatorioMensalInitialData: IRelatorioMensal = {
+export const RelatorioMensalCtrlInitialData: RelatorioMensalCtrl = {
   modalOpen: false,
 };

@@ -1,16 +1,9 @@
+import { User } from "@entities/User";
+import { UserType } from "@enums/UserType";
 import { AuthService } from "@services/AuthService";
-import { User } from "@stores/entities/User";
-import { UserType } from "@stores/entities/enums/UserType";
-import {
-  cast,
-  flow,
-  Instance,
-  SnapshotIn,
-  toGenerator,
-  types,
-} from "mobx-state-tree";
+import { cast, flow, SnapshotIn, toGenerator, types } from "mobx-state-tree";
 
-export const Auth = types
+export const AuthCtrl = types
   .model({
     user: types.maybeNull(User),
   })
@@ -45,9 +38,8 @@ export const Auth = types
     }),
   }));
 
-export type IAuthStore = Instance<typeof Auth>;
-export type IAuth = SnapshotIn<typeof Auth>;
+export type AuthCtrl = SnapshotIn<typeof AuthCtrl>;
 
-export const AuthInitialData: IAuth = {
+export const AuthCtrlInitialData: AuthCtrl = {
   user: null,
 };

@@ -5,9 +5,9 @@ import { DoadoresTable } from "./DoadoresTable";
 import { DoadorModal } from "./DoadorModal";
 import { HistoricoModal } from "./HistoricoModal";
 import { PagamentoModal } from "./PagamentoModal";
+import { RelatorioDescritivoModal } from "./RelatorioDescritivoModal";
 import { RelatorioMensalModal } from "./RelatorioMensalModal";
 import { RelatorioPeriodoModal } from "./RelatorioPeriodoModal";
-import { RelatorioDescritivoModal } from "./RelatorioDescritivoModal";
 
 export const Dashboard = observer(() => {
   return (

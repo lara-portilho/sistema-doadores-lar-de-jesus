@@ -1,6 +1,6 @@
-import { IPagamento } from "@stores/entities/Pagamento";
+import { Pagamento } from "@entities/Pagamento";
 
 export type PagamentoDTO = Omit<
-  IPagamento,
+  Pagamento,
   "id" | "valorTotal" | "valorMensalidade"
 >;
