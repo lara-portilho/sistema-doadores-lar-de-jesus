@@ -8,9 +8,12 @@ permissions:
   contents: read
   pull-requests: write
 jobs:
+  health_check:
+    uses: ./.github/workflows/health-check.yml
   build_and_preview:
-    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'}}
     runs-on: ubuntu-latest
+    needs: health_check
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
