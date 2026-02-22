@@ -14,12 +14,9 @@ import {
   SearchIcon,
   TableIcon,
 } from "@components/icons";
+import { getDepartamentosLabel } from "@enums/Departamentos";
+import { getTiposDoadorLabel, TiposDoador } from "@enums/TiposDoador";
 import { useStore } from "@hooks/useStore";
-import { getDepartamentosLabel } from "@stores/entities/enums/Departamentos";
-import {
-  getTiposDoadorLabel,
-  TiposDoador,
-} from "@stores/entities/enums/TiposDoador";
 import { formatDateString } from "@utils/formatDateString";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
@@ -48,7 +45,7 @@ export const DoadoresTable = observer(() => {
     );
   });
 
-  async function handleDelete(id: string) {
+  async function onDelete(id: string) {
     try {
       const { isConfirmed } = await Swal.fire({
         title: "Atenção!",
@@ -171,7 +168,7 @@ export const DoadoresTable = observer(() => {
                     >
                       <EditIcon className="size-4" />
                     </IconButton>
-                    <IconButton onClick={() => handleDelete(doador.id)}>
+                    <IconButton onClick={() => onDelete(doador.id)}>
                       <DeleteIcon className="size-4 text-red-500" />
                     </IconButton>
                   </>

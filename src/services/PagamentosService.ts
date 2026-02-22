@@ -3,8 +3,8 @@ import { PagamentoDTO } from "@dtos/PagamentoDTO";
 import { RelatorioDescritivoDTO } from "@dtos/RelatorioDescritivoDTO";
 import { RelatorioMensalDTO } from "@dtos/RelatorioMensalDTO";
 import { RelatorioPeriodoDTO } from "@dtos/RelatorioPeriodoDTO";
-import { IDoador } from "@stores/entities/Doador";
-import { IPagamento } from "@stores/entities/Pagamento";
+import { Doador } from "@entities/Doador";
+import { Pagamento } from "@entities/Pagamento";
 import {
   addDoc,
   collection,
@@ -23,7 +23,7 @@ export const PagamentosService = {
   addPagamento: async (pagamento: PagamentoDTO) => {
     const collectionRef = collection(db, "pagamentos");
     const doadorRef = doc(db, "doadores", pagamento.doadorId);
-    const doador = (await getDoc(doadorRef)).data() as IDoador;
+    const doador = (await getDoc(doadorRef)).data() as Doador;
 
     const qtdMeses = pagamento.mesesQuitados?.length || 0;
     const ultimoMes = pagamento.mesesQuitados?.[qtdMeses - 1] || "";
@@ -33,7 +33,7 @@ export const PagamentosService = {
       valorMensalidade * qtdMeses + (pagamento.valorExtra || 0);
     await addDoc(collectionRef, { ...pagamento, valorTotal, valorMensalidade });
     await updateDoc(doadorRef, {
-      ultimoMes: ultimoMes,
+      ultimoMes,
       dataUltimoPag: pagamento.data,
     });
   },
@@ -41,7 +41,7 @@ export const PagamentosService = {
     id: string,
     props?: {
       doadorId: string;
-      pagamentoAnterior?: IPagamento;
+      pagamentoAnterior?: Pagamento;
     },
   ) => {
     const docRef = doc(db, "pagamentos", id);
@@ -64,19 +64,19 @@ export const PagamentosService = {
       ultimoMes: pagamentoAnterior.mesesQuitados?.[ultimoMesIndex],
     });
   },
-  getHistorico: async (doadorId: string): Promise<IPagamento[]> => {
+  getHistorico: async (doadorId: string): Promise<Pagamento[]> => {
     const collectionRef = collection(db, "pagamentos");
     const q = query(collectionRef, where("doadorId", "==", doadorId));
     const querySnapshot = await getDocs(q);
     const data = querySnapshot.docs.map((doc) => ({
       ...doc.data(),
       id: doc.id,
-    })) as IPagamento[];
+    })) as Pagamento[];
     return data;
   },
   getRelatorioPeriodo: async (
     data: RelatorioPeriodoDTO,
-  ): Promise<IPagamento[]> => {
+  ): Promise<Pagamento[]> => {
     const collectionRef = collection(db, "pagamentos");
     const q = query(
       collectionRef,
@@ -84,14 +84,14 @@ export const PagamentosService = {
     );
     const querySnapshot = await getDocs(q);
     const result = (
-      querySnapshot.docs.map((doc) => doc.data()) as IPagamento[]
+      querySnapshot.docs.map((doc) => doc.data()) as Pagamento[]
     ).filter((doc) => data.doadoresIds.includes(doc.doadorId));
 
     return result;
   },
   getRelatorioMensal: async (
     data: RelatorioMensalDTO,
-  ): Promise<IPagamento[]> => {
+  ): Promise<Pagamento[]> => {
     const collectionRef = collection(db, "pagamentos");
     const q = query(
       collectionRef,
@@ -99,14 +99,14 @@ export const PagamentosService = {
     );
     const querySnapshot = await getDocs(q);
     const result = (
-      querySnapshot.docs.map((doc) => doc.data()) as IPagamento[]
+      querySnapshot.docs.map((doc) => doc.data()) as Pagamento[]
     ).filter((doc) => data.doadoresIds.includes(doc.doadorId));
 
     return result;
   },
   getRelatorioDescritivo: async (
     data: RelatorioDescritivoDTO,
-  ): Promise<IPagamento[]> => {
+  ): Promise<Pagamento[]> => {
     const collectionRef = collection(db, "pagamentos");
     let docs: QueryDocumentSnapshot<DocumentData, DocumentData>[] = [];
 
@@ -128,7 +128,7 @@ export const PagamentosService = {
       const querySnapshot = await getDocs(q);
       docs = querySnapshot.docs;
     }
-    const result = (docs.map((doc) => doc.data()) as IPagamento[]).filter(
+    const result = (docs.map((doc) => doc.data()) as Pagamento[]).filter(
       (doc) => data.doadoresIds.includes(doc.doadorId),
     );
 

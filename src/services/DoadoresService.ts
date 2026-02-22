@@ -1,6 +1,6 @@
 import { db } from "@app/firebase";
 import { DoadorDTO } from "@dtos/DoadorDTO";
-import { IDoador } from "@stores/entities/Doador";
+import { Doador } from "@entities/Doador";
 import {
   addDoc,
   collection,
@@ -10,13 +10,13 @@ import {
 } from "firebase/firestore";
 
 export const DoadoresService = {
-  getDoadores: async (): Promise<IDoador[]> => {
+  getDoadores: async (): Promise<Doador[]> => {
     const collectionRef = collection(db, "doadores");
     const querySnapshot = await getDocs(collectionRef);
     const data = querySnapshot.docs.map((doc) => ({
       ...doc.data(),
       id: doc.id,
-    })) as IDoador[];
+    })) as Doador[];
     return data;
   },
   addDoador: async (doador: DoadorDTO) => {

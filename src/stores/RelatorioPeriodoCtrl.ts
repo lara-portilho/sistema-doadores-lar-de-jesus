@@ -1,27 +1,21 @@
-import { RelatorioPeriodoFormValues } from "@pages/Dashboard/RelatorioPeriodoModal";
+import { Doador } from "@entities/Doador";
+import { RelatorioPeriodoFormValues } from "@forms/RelatorioPeriodoForm";
 import { PagamentosService } from "@services/PagamentosService";
 import { formatRelatorioPeriodo } from "@utils/csv/formatters/formatRelatorioPeriodo";
 import { generateCsv } from "@utils/csv/generateCsv";
 import { formatDateString } from "@utils/formatDateString";
 import { getMonthsArray } from "@utils/getMonthsArray";
 import { saveAs } from "file-saver";
-import {
-  flow,
-  Instance,
-  SnapshotIn,
-  toGenerator,
-  types,
-} from "mobx-state-tree";
-import { IDoador } from "../entities/Doador";
+import { flow, SnapshotIn, toGenerator, types } from "mobx-state-tree";
 
-export const RelatorioPeriodo = types
+export const RelatorioPeriodoCtrl = types
   .model({
     modalOpen: types.boolean,
   })
   .actions((self) => ({
     generateRelatorio: flow(function* (
       data: RelatorioPeriodoFormValues,
-      doadores: IDoador[],
+      doadores: Doador[],
     ) {
       const filteredDoadores = doadores.filter(
         (doador) => doador.tipo === data.tipoDoador,
@@ -61,9 +55,8 @@ export const RelatorioPeriodo = types
     },
   }));
 
-export type IRelatorioPeriodoStore = Instance<typeof RelatorioPeriodo>;
-export type IRelatorioPeriodo = SnapshotIn<typeof RelatorioPeriodo>;
+export type RelatorioPeriodoCtrl = SnapshotIn<typeof RelatorioPeriodoCtrl>;
 
-export const RelatorioPeriodoInitialData: IRelatorioPeriodo = {
+export const RelatorioPeriodoCtrlInitialData: RelatorioPeriodoCtrl = {
   modalOpen: false,
 };

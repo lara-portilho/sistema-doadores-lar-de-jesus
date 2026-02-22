@@ -1,11 +1,11 @@
-import { TiposPagamento } from "@app/stores/entities/enums/TiposPagamento";
-import { IDoador } from "@stores/entities/Doador";
-import { IPagamento } from "@stores/entities/Pagamento";
+import { Doador } from "@entities/Doador";
+import { Pagamento } from "@entities/Pagamento";
+import { TiposPagamento } from "@enums/TiposPagamento";
 import { formatDateString } from "@utils/formatDateString";
 
 type FormatRelatorioDescritivoData = {
-  doadores: IDoador[];
-  pagamentos: IPagamento[];
+  doadores: Doador[];
+  pagamentos: Pagamento[];
   dias: string[];
 };
 

@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { DeleteIcon } from "@components/icons";
 import { IconButton } from "@components/actions/IconButton";
+import { DeleteIcon } from "@components/icons";
 import { Modal } from "@components/layout/Modal";
+import { getTiposPagamentoLabel } from "@enums/TiposPagamento";
 import { useStore } from "@hooks/useStore";
-import { getTiposPagamentoLabel } from "@stores/entities/enums/TiposPagamento";
 import { formatDateString } from "@utils/formatDateString";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 export const HistoricoModal = observer(() => {
   const { historicoCtrl, doadoresCtrl, authCtrl } = useStore();
@@ -16,7 +16,7 @@ export const HistoricoModal = observer(() => {
     (doador) => doador.id === historicoCtrl.selectedDoadorId,
   );
 
-  async function handleDelete(id: string, sobrescrever: boolean) {
+  async function onDelete(id: string, sobrescrever: boolean) {
     try {
       const { isConfirmed } = await Swal.fire({
         title: "Atenção!",
@@ -42,7 +42,6 @@ export const HistoricoModal = observer(() => {
 
   useEffect(() => {
     historicoCtrl.getHistorico();
-
     return () => historicoCtrl.reset();
   }, [historicoCtrl.selectedDoadorId]);
 
@@ -108,7 +107,7 @@ export const HistoricoModal = observer(() => {
                   {authCtrl.isEdit && (
                     <td>
                       <IconButton
-                        onClick={() => handleDelete(pagamento.id, index === 0)}
+                        onClick={() => onDelete(pagamento.id, index === 0)}
                       >
                         <DeleteIcon className="size-4 text-red-500" />
                       </IconButton>

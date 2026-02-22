@@ -1,16 +1,9 @@
 import { DoadorDTO } from "@dtos/DoadorDTO";
+import { Doador } from "@entities/Doador";
 import { DoadoresService } from "@services/DoadoresService";
-import { Doador } from "@stores/entities/Doador";
-import {
-  cast,
-  flow,
-  Instance,
-  SnapshotIn,
-  toGenerator,
-  types,
-} from "mobx-state-tree";
+import { cast, flow, SnapshotIn, toGenerator, types } from "mobx-state-tree";
 
-export const Doadores = types
+export const DoadoresCtrl = types
   .model({
     doadores: types.array(Doador),
     modalOpen: types.boolean,
@@ -59,10 +52,9 @@ export const Doadores = types
     },
   }));
 
-export type IDoadoresStore = Instance<typeof Doadores>;
-export type IDoadores = SnapshotIn<typeof Doadores>;
+export type DoadoresCtrl = SnapshotIn<typeof DoadoresCtrl>;
 
-export const DoadoresInitialData: IDoadores = {
+export const DoadoresCtrlInitialData: DoadoresCtrl = {
   doadores: [],
   modalOpen: false,
 };

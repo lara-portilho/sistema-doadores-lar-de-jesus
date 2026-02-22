@@ -1,6 +1,6 @@
-import { IDoador } from "@stores/entities/Doador";
+import { Doador } from "@entities/Doador";
 
 export type DoadorDTO = Omit<
-  IDoador,
+  Doador,
   "id" | "dataUltimoPag" | "ultimoMes" | "excluido"
 >;

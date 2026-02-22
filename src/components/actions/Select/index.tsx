@@ -1,7 +1,7 @@
+import { IconButton } from "@components/actions/IconButton";
+import { CloseIcon } from "@components/icons";
 import cn from "classnames";
 import React from "react";
-import { IconButton } from "../IconButton";
-import { CloseIcon } from "@components/icons";
 
 type SelectProps = React.DetailedHTMLProps<
   React.SelectHTMLAttributes<HTMLSelectElement>,
@@ -29,10 +29,11 @@ export const Select = ({
       <div className="relative">
         <select
           {...props}
+          value={props.value ?? "no-op"}
           className="my-0.5 w-full rounded-t-sm border-b-2 border-blue-900 bg-white px-1.5 py-0.5 outline-0"
         >
           {!!onClear && (
-            <option hidden selected={!props.value}>
+            <option hidden value="no-op">
               {clearMessage}
             </option>
           )}

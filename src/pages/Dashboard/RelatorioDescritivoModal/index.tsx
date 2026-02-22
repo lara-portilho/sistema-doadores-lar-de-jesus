@@ -3,21 +3,17 @@ import { RadioInput } from "@components/actions/RadioInput";
 import { TextInput } from "@components/actions/TextInput";
 import { ListIcon, Spinner } from "@components/icons";
 import { Modal } from "@components/layout/Modal";
-import { useStore } from "@hooks/useStore";
+import { getTiposDoadorLabel, TiposDoador } from "@enums/TiposDoador";
 import {
-  getTiposDoadorLabel,
-  TiposDoador,
-} from "@stores/entities/enums/TiposDoador";
-import { format } from "date-fns";
+  relatorioMensalForm,
+  RelatorioMensalFormValues,
+} from "@forms/RelatorioMensalForm";
+import { useStore } from "@hooks/useStore";
 import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-
-export type RelatorioDescritivoFormValues = {
-  tipoDoador: TiposDoador;
-  mes: string;
-};
 
 export const RelatorioDescritivoModal = observer(() => {
   const { relatorioDescritivoCtrl, doadoresCtrl } = useStore();
@@ -26,14 +22,16 @@ export const RelatorioDescritivoModal = observer(() => {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<RelatorioDescritivoFormValues>({
-    defaultValues: {
-      tipoDoador: TiposDoador.Efetivo,
-      mes: format(new Date(), "yyyy-MM"),
-    },
+  } = useForm<RelatorioMensalFormValues>({
+    defaultValues: relatorioMensalForm.defaultValues,
   });
 
-  async function onSubmit(data: RelatorioDescritivoFormValues) {
+  const validationRules = useMemo(
+    () => relatorioMensalForm.getValidationRules(),
+    [],
+  );
+
+  async function onSubmit(data: RelatorioMensalFormValues) {
     try {
       relatorioDescritivoCtrl.generateRelatorio(
         data,
@@ -59,9 +57,7 @@ export const RelatorioDescritivoModal = observer(() => {
 
         <div className="flex justify-between gap-10">
           <RadioInput
-            {...register("tipoDoador", {
-              required: "Esse campo é necessário!",
-            })}
+            {...register("tipoDoador", validationRules.tipoDoador)}
             options={Object.values(TiposDoador).map((tipo) => ({
               label: getTiposDoadorLabel(tipo),
               value: tipo,
@@ -73,9 +69,7 @@ export const RelatorioDescritivoModal = observer(() => {
           />
           <div className="flex-1">
             <TextInput
-              {...register("mes", {
-                required: "Esse campo é necessário!",
-              })}
+              {...register("mes", validationRules.mes)}
               label="Mês"
               type="month"
               error={errors.mes?.message}

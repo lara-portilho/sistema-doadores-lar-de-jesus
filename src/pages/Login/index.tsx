@@ -2,32 +2,37 @@ import logo from "@assets/logo.png";
 import { Button } from "@components/actions/Button";
 import { TextInput } from "@components/actions/TextInput";
 import { LoginIcon, Spinner } from "@components/icons";
+import { loginForm, LoginFormValues } from "@forms/LoginForm";
 import { useStore } from "@hooks/useStore";
 import { treatAuthErrors } from "@utils/treatAuthErrors";
 import { observer } from "mobx-react-lite";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 
 export const Login = observer(() => {
-  const [email, setEmail] = useState("");
-  const [pass, setPass] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormValues>({
+    defaultValues: loginForm.defaultValues,
+  });
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const { authCtrl } = useStore();
 
-  async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setLoading(true);
+  const validationRules = useMemo(() => loginForm.getValidationRules(), []);
+
+  async function onSubmit(data: LoginFormValues) {
     try {
-      await authCtrl.login(email, pass);
+      await authCtrl.login(data.email, data.pass);
       navigate("/");
     } catch (err: unknown) {
       const message = treatAuthErrors(err);
       setError(message);
-    } finally {
-      setLoading(false);
+      console.log(err);
     }
   }
 
@@ -35,25 +40,23 @@ export const Login = observer(() => {
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-5">
       <img src={logo} alt="Lar de Jesus" className="w-36" />
       <h1 className="text-4xl font-bold">Sistema de Mensalidades e Doações</h1>
-      <form className="flex w-64 flex-col" onSubmit={handleLogin}>
+      <form className="flex w-64 flex-col" onSubmit={handleSubmit(onSubmit)}>
         <TextInput
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="exemplo@exemplo.com"
-          required
+          {...register("email", validationRules.email)}
           label="Email"
+          error={errors.email?.message}
+          placeholder="exemplo@exemplo.com"
         />
         <TextInput
-          value={pass}
-          onChange={(e) => setPass(e.target.value)}
+          {...register("pass", validationRules.pass)}
+          label="Senha"
           placeholder="Sua senha aqui"
           type="password"
-          label="Senha"
           required
-          error={error}
+          error={error || errors.pass?.message}
         />
-        <Button type="submit" className="mt-1.5" disabled={loading}>
-          {loading ? (
+        <Button type="submit" className="mt-1.5" disabled={isSubmitting}>
+          {isSubmitting ? (
             <Spinner className="size-4 animate-spin text-white" />
           ) : (
             <LoginIcon className="size-4 text-white" />

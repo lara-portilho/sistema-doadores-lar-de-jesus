@@ -7,10 +7,10 @@ export {
   MdDelete as DeleteIcon,
   MdEdit as EditIcon,
   MdHistory as HistoryIcon,
+  MdOutlineListAlt as ListIcon,
   MdLogin as LoginIcon,
   MdLogout as LogoutIcon,
   MdAttachMoney as MoneyIcon,
   MdSearch as SearchIcon,
   MdOutlineTableChart as TableIcon,
-  MdOutlineListAlt as ListIcon,
 } from "react-icons/md";

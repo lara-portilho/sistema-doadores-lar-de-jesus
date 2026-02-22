@@ -1,27 +1,21 @@
-import { RelatorioDescritivoFormValues } from "@pages/Dashboard/RelatorioDescritivoModal";
+import { Doador } from "@entities/Doador";
+import { RelatorioMensalFormValues } from "@forms/RelatorioMensalForm";
 import { PagamentosService } from "@services/PagamentosService";
 import { formatRelatorioDescritivo } from "@utils/csv/formatters/formatRelatorioDescritivo";
 import { generateCsv } from "@utils/csv/generateCsv";
 import { formatDateString } from "@utils/formatDateString";
-import { saveAs } from "file-saver";
-import {
-  flow,
-  Instance,
-  SnapshotIn,
-  toGenerator,
-  types,
-} from "mobx-state-tree";
-import { IDoador } from "../entities/Doador";
 import { getDaysArray } from "@utils/getDaysArray";
+import { saveAs } from "file-saver";
+import { flow, SnapshotIn, toGenerator, types } from "mobx-state-tree";
 
-export const RelatorioDescritivo = types
+export const RelatorioDescritivoCtrl = types
   .model({
     modalOpen: types.boolean,
   })
   .actions((self) => ({
     generateRelatorio: flow(function* (
-      data: RelatorioDescritivoFormValues,
-      doadores: IDoador[],
+      data: RelatorioMensalFormValues,
+      doadores: Doador[],
     ) {
       const filteredDoadores = doadores.filter(
         (doador) => doador.tipo === data.tipoDoador,
@@ -57,9 +51,10 @@ export const RelatorioDescritivo = types
     },
   }));
 
-export type IRelatorioDescritivoStore = Instance<typeof RelatorioDescritivo>;
-export type IRelatorioDescritivo = SnapshotIn<typeof RelatorioDescritivo>;
+export type RelatorioDescritivoCtrl = SnapshotIn<
+  typeof RelatorioDescritivoCtrl
+>;
 
-export const RelatorioDescritivoInitialData: IRelatorioDescritivo = {
+export const RelatorioDescritivoCtrlInitialData: RelatorioDescritivoCtrl = {
   modalOpen: false,
 };
