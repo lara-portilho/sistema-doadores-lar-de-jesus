@@ -107,15 +107,24 @@ export function formatRelatorioDescritivo({
     csvData.push(...lines, emptyLine);
   }
 
-  const lastLine: RelatorioDescritivoCsvFormat = {
-    column1: `PIX: R$${sumPix.toFixed(2)}`,
-    column2: `CARTAO: R$${sumCartao.toFixed(2)}`,
-    column3: `DINHEIRO: R$${sumDinheiro.toFixed(2)}`,
-    column4: `TEV: R$${sumTev.toFixed(2)}`,
-    column5: "",
-  };
+  const lastLines: RelatorioDescritivoCsvFormat[] = [
+    {
+      column1: "PIX",
+      column2: "CARTAO",
+      column3: "DINHEIRO",
+      column4: "TEV",
+      column5: "",
+    },
+    {
+      column1: `R$${sumPix.toFixed(2)}`,
+      column2: `R$${sumCartao.toFixed(2)}`,
+      column3: `R$${sumDinheiro.toFixed(2)}`,
+      column4: `R$${sumTev.toFixed(2)}`,
+      column5: "",
+    },
+  ];
 
-  csvData.push(emptyLine, lastLine);
+  const result = csvData.concat(emptyLine, lastLines);
 
-  return csvData;
+  return result;
 }

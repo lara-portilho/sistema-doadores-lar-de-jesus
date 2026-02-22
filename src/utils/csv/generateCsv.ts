@@ -1,5 +1,6 @@
 export function generateCsv<T>(data: T[]) {
   let str = "";
+  const BOM = new Uint8Array([0xef, 0xbb, 0xbf]);
 
   for (const obj of data) {
     let line = "";
@@ -10,5 +11,5 @@ export function generateCsv<T>(data: T[]) {
     }
     str += line + "\r\n";
   }
-  return new Blob([str], { type: "text/csv" });
+  return new Blob([BOM, str], { type: "text/csv;charset=utf-8;" });
 }
