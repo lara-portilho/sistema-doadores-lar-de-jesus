@@ -82,11 +82,11 @@ export const doadorForm = {
     return {
       nome: formValues.nome,
       tipo: formValues.tipo as TiposDoador,
-      cpf: formValues.cpf || undefined,
-      endereco: formValues.endereco || undefined,
-      telefone: formValues.telefone || undefined,
-      email: formValues.email || undefined,
-      aniversario: formValues.aniversario || undefined,
+      cpf: formValues.cpf || null,
+      endereco: formValues.endereco || null,
+      telefone: formValues.telefone || null,
+      email: formValues.email || null,
+      aniversario: formValues.aniversario || null,
       departamento: formValues.departamento as Departamentos,
       valor: Number(formValues.valor),
     };
