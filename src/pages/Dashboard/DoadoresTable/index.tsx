@@ -34,10 +34,10 @@ export const DoadoresTable = observer(() => {
     relatorioDescritivoCtrl,
   } = useStore();
   const [search, setSearch] = useState("");
-  const [tipoFilter, setTipoFilter] = useState<TiposDoador | undefined>();
+  const [tipoFilter, setTipoFilter] = useState<TiposDoador | "">("");
 
   const filteredDoadores = doadoresCtrl.filteredDoadores?.filter((doador) => {
-    if (tipoFilter === undefined)
+    if (tipoFilter === "")
       return doador.nome.toLowerCase().includes(search.toLowerCase());
     return (
       doador.nome.toLowerCase().includes(search.toLowerCase()) &&
@@ -93,7 +93,7 @@ export const DoadoresTable = observer(() => {
               value: tipo,
             }))}
             className="min-w-48"
-            onClear={() => setTipoFilter(undefined)}
+            onClear={() => setTipoFilter("")}
             clearMessage="Filtre por tipo"
           />
         </div>
